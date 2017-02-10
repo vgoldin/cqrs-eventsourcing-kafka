@@ -31,11 +31,6 @@ public class LocalEventStore implements EventStore {
     }
 
     @Override
-    public void saveEvents(String aggregateId, Iterable<? extends Event> events, int expectedVersion) {
-        saveEvents(null, aggregateId, events, expectedVersion);
-    }
-
-    @Override
     public void saveEvents(String streamName, String aggregateId, Iterable<? extends Event> events, int expectedVersion) {
         List<EventDescriptor> eventDescriptors;
         if (!storage.containsKey(aggregateId)) {

@@ -5,6 +5,7 @@ import com.google.common.reflect.TypeToken;
 import io.plumery.core.ActionHandler;
 import io.plumery.core.Event;
 import io.plumery.core.infrastructure.EventPublisher;
+import io.plumery.messaging.ActionHandlerResolver;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -12,20 +13,20 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class LocalEventPublisher implements EventPublisher {
-    private final LocalActionHandlerResolver resolverProvider;
+    private final ActionHandlerResolver resolverProvider;
 
     /**
      * Inject lazy LocalActionHandlerResolver provider in order to be able using EventPublisher in action handlers (directly or indirectly);
      * @param resolverProvider
      */
-    public LocalEventPublisher(LocalActionHandlerResolver resolverProvider) {
+    public LocalEventPublisher(ActionHandlerResolver resolverProvider) {
         this.resolverProvider = resolverProvider;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Event> void publish(String streamName, T event) {
-        List<ActionHandler<T>> handlers = resolverProvider.findHandlersFor(event);
+        List<ActionHandler> handlers = resolverProvider.findHandlersFor(event.getClass().getSimpleName());
 
         if(handlers != null && handlers.size() > 0) {
             for (ActionHandler<T> handler : handlers) {

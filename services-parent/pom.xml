@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cqrs-eventsourcing-kafka</artifactId>
+        <groupId>io.plumery</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>services-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <plumery.version>1.0-SNAPSHOT</plumery.version>
+        <dropwizard.version>1.0.6</dropwizard.version>
+        <camel.version>2.18.0</camel.version>
+        <guava.version>21.0</guava.version>
+        <jackson.version>2.7.8</jackson.version>
+        <kafka.version>0.10.1.0</kafka.version>
+        <logback.version>1.1.7</logback.version>
+        <jsr305.version>3.0.1</jsr305.version>
+        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.plumery</groupId>
+                <artifactId>services-core</artifactId>
+                <version>${plumery.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.plumery</groupId>
+                <artifactId>services-infrastructure-messaging</artifactId>
+                <version>${plumery.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.plumery</groupId>
+                <artifactId>services-infrastructure-eventstore</artifactId>
+                <version>${plumery.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-core</artifactId>
+                <version>${dropwizard.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-core</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${jsr305.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

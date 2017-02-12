@@ -23,7 +23,7 @@ public class EventStoreFactory {
         return zookeeper;
     }
 
-    public EventStore build(Environment enviroment, EventPublisher eventPublisher) {
-        return new KafkaEventStore(zookeeper, eventPublisher, enviroment.getObjectMapper());
+    public EventStore build(Environment enviroment) {
+        return new KafkaEventStore(zookeeper, enviroment.getObjectMapper());
     }
 }

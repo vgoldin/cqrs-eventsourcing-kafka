@@ -28,8 +28,7 @@ public class InventoryItemDomain extends Application<InventoryItemDomainConfigur
 
         ActionHandlerResolver resolver = ActionHandlerResolver.newInstance();
 
-        EventPublisher eventPublisher = configuration.getEventPublisherFactory().build(environment);
-        EventStore eventStore = configuration.getEventStoreFactory().build(environment, eventPublisher);
+        EventStore eventStore = configuration.getEventStoreFactory().build(environment);
         Repository<InventoryItem> repository = new InventoryItemRepository(eventStore);
 
         registerCommandHandlers(resolver, repository);

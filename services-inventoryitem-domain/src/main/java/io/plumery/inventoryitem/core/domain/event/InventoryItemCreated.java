@@ -7,7 +7,6 @@ import io.plumery.core.ID;
  * Created by veniamin on 30/01/2017.
  */
 public class InventoryItemCreated extends Event {
-    public final ID id;
     public final String name;
 
     public InventoryItemCreated(ID id, String name) {

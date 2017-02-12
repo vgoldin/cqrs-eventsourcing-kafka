@@ -1,7 +1,6 @@
 package io.plumery.messaging.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dropwizard.lifecycle.Managed;
 import io.plumery.core.Action;
 import io.plumery.core.ActionHandler;
@@ -24,8 +23,9 @@ public class KafkaCommandListener implements CommandListener, Managed {
     private final KafkaConsumer consumer;
     private final ActionHandlerResolver resolver;
     private final AtomicBoolean closed = new AtomicBoolean(false);
+    private final ObjectMapper objectMapper;
 
-    public KafkaCommandListener(String zookeeper, String groupId) {
+    public KafkaCommandListener(String zookeeper, String groupId, ObjectMapper objectMapper) {
         resolver = ActionHandlerResolver.getCurrent();
 
         Properties props = new Properties();
@@ -35,7 +35,8 @@ public class KafkaCommandListener implements CommandListener, Managed {
         props.put("value.deserializer", StringDeserializer.class);
         props.put("enable.auto.commit", "false");
 
-        consumer = new KafkaConsumer(props);
+        this.consumer = new KafkaConsumer(props);
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -66,18 +67,16 @@ public class KafkaCommandListener implements CommandListener, Managed {
     private void handleActions(String action, String key, String value) {
         List<ActionHandler> handlers = resolver.findHandlersFor(action);
         Class<?> clazz = resolver.getHandledActionType(handlers.get(0).getClass());
-        Action itemWithOwner;
+        Action actionClazz;
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, true);
-            itemWithOwner = (Action) mapper.readValue(value, clazz);
+            actionClazz = (Action) objectMapper.readValue(value, clazz);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         for (ActionHandler handler : handlers) {
-            handler.handle(itemWithOwner);
+            handler.handle(actionClazz);
         }
     }
 

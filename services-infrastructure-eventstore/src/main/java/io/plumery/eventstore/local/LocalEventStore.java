@@ -47,7 +47,7 @@ public class LocalEventStore implements EventStore {
         for (Event event : events) {
             version++;
             eventDescriptors.add(new EventDescriptor(aggregateId, event, version));
-            eventPublisher.publish(streamName, event);
+            eventPublisher.publish(event);
         }
     }
 

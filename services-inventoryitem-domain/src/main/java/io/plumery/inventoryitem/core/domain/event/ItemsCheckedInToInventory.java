@@ -4,7 +4,6 @@ import io.plumery.core.Event;
 import io.plumery.core.ID;
 
 public class ItemsCheckedInToInventory extends Event {
-    public final ID id;
     public final Integer count;
 
     public ItemsCheckedInToInventory(ID id, Integer count) {

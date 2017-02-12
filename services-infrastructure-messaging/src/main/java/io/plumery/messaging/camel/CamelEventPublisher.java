@@ -38,18 +38,4 @@ public class CamelEventPublisher implements EventPublisher {
         }
         producer.sendBody(destinationNameForEventPublishing(event.getClass()), serializedEvent);
     }
-
-    @Override
-    public <T extends Event> void publish(String streamName, T event) {
-        ObjectMapper mapper = new ObjectMapper();
-        String serializedEvent = null;
-        try {
-            serializedEvent = mapper.writeValueAsString(event);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        producer.sendBody(destinationNameForEventPublishing(event.getClass()), serializedEvent);
-        producer.sendBodyAndHeader(destinationNameForStreamEventPublishing(streamName), serializedEvent, "EVENT_TYPE",
-                event.getClass().getSimpleName());
-    }
 }

@@ -22,35 +22,29 @@ import java.util.stream.StreamSupport;
  */
 public class KafkaEventStore implements EventStore {
     private KafkaProducer<String, String> producer;
-    private ObjectMapper mapper;
+    private ObjectMapper objectMapper;
     private EventPublisher eventPublisher;
 
-    public KafkaEventStore(String zookeeper, String groupId, EventPublisher eventPublisher) {
+    public KafkaEventStore(String zookeeper, EventPublisher eventPublisher, ObjectMapper objectMapper) {
         Properties props = new Properties();
         props.put("bootstrap.servers", zookeeper);
-        props.put("group.id", groupId);
         props.put("key.serializer", StringSerializer.class);
         props.put("value.serializer", StringSerializer.class);
 
-        producer = new KafkaProducer<>(props);
-
-        mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(ID.class, new IDSerializer());
-        mapper.registerModule(module);
-
+        this.producer = new KafkaProducer<>(props);
         this.eventPublisher = eventPublisher;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void saveEvents(String streamName, String aggregateId, Iterable<? extends Event> events, int expectedVersion) {
         events.forEach(event -> {
             try {
-                String json = mapper.writeValueAsString(event);
+                String json = objectMapper.writeValueAsString(event);
                 ProducerRecord<String, String> record =
                         new ProducerRecord<>(streamName, aggregateId, json);
                 producer.send(record);
-                eventPublisher.publish(streamName, event);
+                eventPublisher.publish(event);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

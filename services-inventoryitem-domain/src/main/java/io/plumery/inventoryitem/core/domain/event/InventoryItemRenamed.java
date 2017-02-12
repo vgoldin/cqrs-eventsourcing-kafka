@@ -4,7 +4,6 @@ import io.plumery.core.Event;
 import io.plumery.core.ID;
 
 public class InventoryItemRenamed extends Event {
-    public final ID id;
     public final String newName;
 
     public InventoryItemRenamed(ID id, String newName) {

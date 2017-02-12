@@ -24,8 +24,7 @@ public class LocalEventPublisher implements EventPublisher {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Event> void publish(String streamName, T event) {
+    public <T extends Event> void publish(T event) {
         List<ActionHandler> handlers = resolverProvider.findHandlersFor(event.getClass().getSimpleName());
 
         if(handlers != null && handlers.size() > 0) {
@@ -52,11 +51,5 @@ public class LocalEventPublisher implements EventPublisher {
             }
         }
         return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Event> void publish(T event) {
-        publish(null, event);
     }
 }

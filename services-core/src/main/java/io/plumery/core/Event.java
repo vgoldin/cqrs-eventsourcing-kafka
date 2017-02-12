@@ -5,4 +5,5 @@ package io.plumery.core;
  */
 public abstract class Event implements Action {
     public int version;
+    public ID id;
 }

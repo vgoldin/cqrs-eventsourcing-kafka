@@ -22,7 +22,8 @@ public class CommandListenerFactory {
     public CommandListener build(Environment environment) {
         KafkaCommandListener listener =
                 new KafkaCommandListener(zookeeper,
-                        environment.getName());
+                        environment.getName(),
+                        environment.getObjectMapper());
 
         environment.lifecycle().manage(listener);
 

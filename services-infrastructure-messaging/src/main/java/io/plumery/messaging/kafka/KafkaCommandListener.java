@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class KafkaCommandListener implements CommandListener, Managed {
     private static final Logger LOG = LoggerFactory.getLogger(KafkaCommandListener.class);
@@ -42,14 +43,18 @@ public class KafkaCommandListener implements CommandListener, Managed {
     @Override
     public void start() throws Exception {
         try {
-            List<String> actions = resolver.getSupportedActions();
-            consumer.subscribe(actions);
+            List<String> actionTopics = resolver.getSupportedActions().stream()
+                    .map(s -> Constants.COMMAND_TOPIC_PREFIX + s)
+                    .collect(Collectors.toList());
+
+            consumer.subscribe(actionTopics);
 
             while (!closed.get()) {
                 ConsumerRecords<String, String> records = consumer.poll(10000);
                 for (ConsumerRecord<String, String> record : records) {
                     try {
-                        handleActions(record.topic(), record.key(), record.value());
+                        String action = record.topic().replace(Constants.COMMAND_TOPIC_PREFIX, "");
+                        handleAction(action, record.value());
 
                         consumer.commitSync();
                     } catch (Exception ex) {
@@ -64,7 +69,7 @@ public class KafkaCommandListener implements CommandListener, Managed {
         }
     }
 
-    private void handleActions(String action, String key, String value) {
+    private void handleAction(String action, String value) {
         List<ActionHandler> handlers = resolver.findHandlersFor(action);
         Class<?> clazz = resolver.getHandledActionType(handlers.get(0).getClass());
         Action actionClazz;

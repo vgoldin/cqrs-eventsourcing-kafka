@@ -10,6 +10,8 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
 
+import static io.plumery.messaging.kafka.Constants.COMMAND_TOPIC_PREFIX;
+
 public class KafkaCommandDispatcher implements CommandDispatcher {
     private final KafkaProducer producer;
     private final ObjectMapper objectMapper;
@@ -36,7 +38,7 @@ public class KafkaCommandDispatcher implements CommandDispatcher {
 
     @Override
     public <T extends Command> void dispatch(T command) {
-        String topic = command.getClass().getSimpleName();
+        String topic = COMMAND_TOPIC_PREFIX + command.getClass().getSimpleName();
         String key = command.id.toString();
         String value = serializeCommand(command);
 

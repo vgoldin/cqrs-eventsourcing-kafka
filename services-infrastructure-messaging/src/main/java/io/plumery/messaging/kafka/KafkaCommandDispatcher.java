@@ -2,19 +2,19 @@ package io.plumery.messaging.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.plumery.core.Event;
-import io.plumery.core.infrastructure.EventPublisher;
+import io.plumery.core.Command;
+import io.plumery.core.infrastructure.CommandDispatcher;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
 
-public class KafkaEventPublisher implements EventPublisher {
+public class KafkaCommandDispatcher implements CommandDispatcher {
     private final KafkaProducer producer;
     private final ObjectMapper objectMapper;
 
-    public KafkaEventPublisher(String zookeeper, ObjectMapper objectMapper) {
+    public KafkaCommandDispatcher(String zookeeper, ObjectMapper objectMapper) {
         Properties props = new Properties();
         props.put("bootstrap.servers", zookeeper);
         props.put("key.serializer", StringSerializer.class);
@@ -24,23 +24,23 @@ public class KafkaEventPublisher implements EventPublisher {
         this.objectMapper = objectMapper;
     }
 
-    @Override
-    public <T extends Event> void publish(T event) {
-        String topic = event.getClass().getSimpleName();
-        String key = event.id.toString();
-        String value = serializeEvent(event);
-
-        ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, value);
-        producer.send(record);
-    }
-
-    private <T extends Event> String serializeEvent(T event) {
+    private <T extends Command> String serializeCommand(T command) {
         String json;
         try {
-            json = objectMapper.writeValueAsString(event);
+            json = objectMapper.writeValueAsString(command);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
         return json;
+    }
+
+    @Override
+    public <T extends Command> void dispatch(T command) {
+        String topic = command.getClass().getSimpleName();
+        String key = command.id.toString();
+        String value = serializeCommand(command);
+
+        ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, value);
+        producer.send(record);
     }
 }

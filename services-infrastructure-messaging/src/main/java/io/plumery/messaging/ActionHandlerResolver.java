@@ -1,6 +1,5 @@
 package io.plumery.messaging;
 
-import com.google.common.collect.Lists;
 import io.plumery.core.ActionHandler;
 import io.plumery.core.CommandHandler;
 import io.plumery.core.EventHandler;
@@ -71,7 +70,7 @@ public class ActionHandlerResolver {
     }
 
     public List<String> getSupportedActions() {
-        List<String> actions = Lists.newArrayList();
+        List<String> actions = new ArrayList<>();
         for (ActionHandler actionHandler : actionHandlers) {
             Class<?> actionClass = getHandledActionType(actionHandler.getClass());
             String action = actionClass.getSimpleName();

@@ -6,12 +6,12 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 import io.plumery.core.ActionHandler;
 import io.plumery.core.ID;
-import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.core.infrastructure.Repository;
 import io.plumery.eventstore.serializer.IDSerializer;
 import io.plumery.inventoryitem.core.command.handler.*;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
+import io.plumery.inventoryitem.core.domain.event.InventoryItemCreated;
 import io.plumery.inventoryitem.core.infrastructure.InventoryItemRepository;
 import io.plumery.messaging.ActionHandlerResolver;
 
@@ -28,7 +28,7 @@ public class InventoryItemDomain extends Application<InventoryItemDomainConfigur
 
         ActionHandlerResolver resolver = ActionHandlerResolver.newInstance();
 
-        EventStore eventStore = configuration.getEventStoreFactory().build(environment);
+        EventStore eventStore = configuration.getEventStoreFactory().build(environment, getDefaultEventsPackage());
         Repository<InventoryItem> repository = new InventoryItemRepository(eventStore);
 
         registerCommandHandlers(resolver, repository);
@@ -51,5 +51,9 @@ public class InventoryItemDomain extends Application<InventoryItemDomainConfigur
                 new RenameInventoryCommandHandler(repository));
 
         resolver.setActionHandlers(commandHandlers);
+    }
+
+    private static String getDefaultEventsPackage() {
+        return InventoryItemCreated.class.getPackage().getName();
     }
 }

@@ -13,7 +13,7 @@ public class InventoryItem extends AggregateRoot {
     private InventoryItem() {}
 
     public InventoryItem(ID id, String name) {
-        applyChange(new InventoryItemCreated(id, name));
+        applyChange(new InventoryItemCreated(id, name, 0));
     }
 
 

@@ -35,6 +35,7 @@ public class KafkaCommandListener implements CommandListener, Managed {
         props.put("key.deserializer", StringDeserializer.class);
         props.put("value.deserializer", StringDeserializer.class);
         props.put("enable.auto.commit", "false");
+        props.put("auto.offset.reset", "earliest");
 
         this.consumer = new KafkaConsumer(props);
         this.objectMapper = objectMapper;

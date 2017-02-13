@@ -2,7 +2,6 @@ package io.plumery.eventstore;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.setup.Environment;
-import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.kafka.KafkaEventStore;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -23,7 +22,12 @@ public class EventStoreFactory {
         return zookeeper;
     }
 
-    public EventStore build(Environment enviroment) {
-        return new KafkaEventStore(zookeeper, enviroment.getObjectMapper());
+    public EventStore build(Environment enviroment, String eventsPackage) {
+        return new KafkaEventStore.Builder()
+                .withZookeeper(zookeeper)
+                .withGroupId(enviroment.getName())
+                .withObjectMapper(enviroment.getObjectMapper())
+                .withEventsPackage(eventsPackage)
+                .build();
     }
 }

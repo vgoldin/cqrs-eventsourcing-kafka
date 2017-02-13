@@ -39,10 +39,9 @@ public class KafkaCommandDispatcher implements CommandDispatcher {
     @Override
     public <T extends Command> void dispatch(T command) {
         String topic = COMMAND_TOPIC_PREFIX + command.getClass().getSimpleName();
-        String key = command.id.toString();
         String value = serializeCommand(command);
 
-        ProducerRecord<String, String> record = new ProducerRecord<>(topic, key, value);
+        ProducerRecord<String, String> record = new ProducerRecord<>(topic, value);
         producer.send(record);
     }
 }

@@ -7,8 +7,10 @@ import io.plumery.core.AggregateRoot;
 import io.plumery.core.Event;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
+import io.plumery.eventstore.EventDescriptor;
 
 import javax.annotation.Nullable;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,15 +41,20 @@ public class LocalEventStore implements EventStore {
             storage.put(aggregateId, eventDescriptors);
         } else {
             eventDescriptors = storage.get(aggregateId);
-            // TODO: check version
+
+            if (eventDescriptors.get(eventDescriptors.size() - 1).version != expectedVersion && expectedVersion != -1) {
+                throw new ConcurrentModificationException();
+            }
         }
 
         int version = expectedVersion;
 
         for (Event event : events) {
             version++;
+            event.version = version;
+
             eventDescriptors.add(new EventDescriptor(aggregateId, event, version));
-            eventPublisher.publish(event);
+            eventPublisher.publish(streamName, event);
         }
     }
 
@@ -58,17 +65,5 @@ public class LocalEventStore implements EventStore {
         }
 
         return Lists.newArrayList();
-    }
-
-    private class EventDescriptor {
-        private final String aggregateId;
-        private final Event event;
-        private final int version;
-
-        private EventDescriptor(String aggregateId, Event event, int version) {
-            this.aggregateId = aggregateId;
-            this.event = event;
-            this.version = version;
-        }
     }
 }

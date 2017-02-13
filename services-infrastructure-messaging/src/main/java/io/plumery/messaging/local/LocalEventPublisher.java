@@ -24,7 +24,7 @@ public class LocalEventPublisher implements EventPublisher {
     }
 
     @Override
-    public <T extends Event> void publish(T event) {
+    public <T extends Event> void publish(String streamName, T event) {
         List<ActionHandler> handlers = resolverProvider.findHandlersFor(event.getClass().getSimpleName());
 
         if(handlers != null && handlers.size() > 0) {

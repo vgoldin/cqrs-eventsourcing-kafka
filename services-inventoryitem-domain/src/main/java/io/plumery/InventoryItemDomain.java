@@ -1,11 +1,10 @@
 package io.plumery;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.google.common.collect.Sets;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
-import io.plumery.core.ActionHandler;
 import io.plumery.core.ID;
+import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.core.infrastructure.Repository;
 import io.plumery.eventstore.serializer.IDSerializer;
@@ -14,8 +13,6 @@ import io.plumery.inventoryitem.core.domain.InventoryItem;
 import io.plumery.inventoryitem.core.domain.event.InventoryItemCreated;
 import io.plumery.inventoryitem.core.infrastructure.InventoryItemRepository;
 import io.plumery.messaging.ActionHandlerResolver;
-
-import java.util.Set;
 
 public class InventoryItemDomain extends Application<InventoryItemDomainConfiguration> {
     public static void main(String[] args) throws Exception {
@@ -28,7 +25,8 @@ public class InventoryItemDomain extends Application<InventoryItemDomainConfigur
 
         ActionHandlerResolver resolver = ActionHandlerResolver.newInstance();
 
-        EventStore eventStore = configuration.getEventStoreFactory().build(environment, getDefaultEventsPackage());
+        EventPublisher publisher = configuration.getEventPublisherFactory().build(environment);
+        EventStore eventStore = configuration.getEventStoreFactory().build(environment, publisher, getDefaultEventsPackage());
         Repository<InventoryItem> repository = new InventoryItemRepository(eventStore);
 
         registerCommandHandlers(resolver, repository);
@@ -37,20 +35,19 @@ public class InventoryItemDomain extends Application<InventoryItemDomainConfigur
     }
 
     private static void configureObjectMapper(Environment environment) {
+        environment.getObjectMapper().findAndRegisterModules();
+
         SimpleModule module = new SimpleModule();
         module.addSerializer(ID.class, new IDSerializer());
         environment.getObjectMapper().registerModule(module);
     }
 
     private static void registerCommandHandlers(ActionHandlerResolver resolver, Repository<InventoryItem> repository) {
-        Set<ActionHandler> commandHandlers = Sets.newHashSet(
-                new CheckInItemsToIventoryHandler(repository),
-                new CreateInventoryItemHandler(repository),
-                new DeactivateInventoryItemHandler(repository),
-                new RemoveItemsFromInventoryHandler(repository),
-                new RenameInventoryCommandHandler(repository));
-
-        resolver.setActionHandlers(commandHandlers);
+        resolver.registerActionHandler(new CheckInItemsToIventoryHandler(repository));
+        resolver.registerActionHandler(new CreateInventoryItemHandler(repository));
+        resolver.registerActionHandler(new DeactivateInventoryItemHandler(repository));
+        resolver.registerActionHandler(new RemoveItemsFromInventoryHandler(repository));
+        resolver.registerActionHandler(new RenameInventoryCommandHandler(repository));
     }
 
     private static String getDefaultEventsPackage() {

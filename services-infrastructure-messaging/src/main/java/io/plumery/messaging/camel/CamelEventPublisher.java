@@ -28,7 +28,7 @@ public class CamelEventPublisher implements EventPublisher {
     }
 
     @Override
-    public <T extends Event> void publish(T event) {
+    public <T extends Event> void publish(String streamName, T event) {
         ObjectMapper mapper = new ObjectMapper();
         String serializedEvent = null;
         try {

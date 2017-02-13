@@ -3,3 +3,6 @@ commandListener:
 
 eventStore:
   zookeeper: 127.0.0.1:9092
+
+eventPublisher:
+  zookeeper: 127.0.0.1:9092

@@ -1,5 +1,6 @@
 package io.plumery.messaging;
 
+import io.plumery.core.Action;
 import io.plumery.core.ActionHandler;
 import io.plumery.core.CommandHandler;
 import io.plumery.core.EventHandler;
@@ -7,6 +8,7 @@ import io.plumery.core.EventHandler;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -86,5 +88,13 @@ public class ActionHandlerResolver {
         setCurrent(resolver);
 
         return resolver;
+    }
+
+    public <T extends ActionHandler> void registerActionHandler(T actionHandler) {
+        if (actionHandlers == null) {
+            actionHandlers = new HashSet<>();
+        }
+
+        actionHandlers.add(actionHandler);
     }
 }

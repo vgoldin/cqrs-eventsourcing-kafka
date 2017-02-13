@@ -2,17 +2,25 @@ package io.plumery.eventstore;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.setup.Environment;
+import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.kafka.KafkaEventStore;
+import io.plumery.eventstore.local.LocalEventStore;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Created by veniamin on 10/02/2017.
  */
 public class EventStoreFactory {
+    private static final String KAFKA = "kafka";
+    private static final String LOCAL = "local";
+
     @NotEmpty
     @JsonProperty
     private String zookeeper;
+
+    @JsonProperty
+    private String type = LOCAL;
 
     public void setZookeeper(String zookeeper) {
         this.zookeeper = zookeeper;
@@ -22,12 +30,28 @@ public class EventStoreFactory {
         return zookeeper;
     }
 
-    public EventStore build(Environment enviroment, String eventsPackage) {
-        return new KafkaEventStore.Builder()
-                .withZookeeper(zookeeper)
-                .withGroupId(enviroment.getName())
-                .withObjectMapper(enviroment.getObjectMapper())
-                .withEventsPackage(eventsPackage)
-                .build();
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public EventStore build(Environment enviroment, EventPublisher publisher, String eventsPackage) {
+        EventStore eventStore;
+
+        if (type.equals(KAFKA)) {
+            eventStore = new KafkaEventStore.Builder()
+                    .withZookeeper(zookeeper)
+                    .withGroupId(enviroment.getName())
+                    .withObjectMapper(enviroment.getObjectMapper())
+                    .withEventsPackage(eventsPackage)
+                    .build();
+        } else {
+            eventStore = new LocalEventStore(publisher);
+        }
+
+        return eventStore;
     }
 }

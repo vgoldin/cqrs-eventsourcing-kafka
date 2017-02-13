@@ -5,5 +5,4 @@ package io.plumery.core;
  */
 public abstract class Command implements Action {
     public int originalVersion;
-    public ID id;
 }

@@ -7,10 +7,13 @@ import io.plumery.core.infrastructure.EventPublisher;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
 public class KafkaEventPublisher implements EventPublisher {
+    private static Logger LOG = LoggerFactory.getLogger(KafkaEventPublisher.class);
     private final KafkaProducer producer;
     private final ObjectMapper objectMapper;
 
@@ -26,12 +29,15 @@ public class KafkaEventPublisher implements EventPublisher {
 
     @Override
     public <T extends Event> void publish(String streamName, T event) {
+        LOG.debug("Publishing event ["+event.getClass().getSimpleName()+"] for [" + streamName + "]");
+
         String topic = streamName;
         String key = event.getClass().getSimpleName();
 
         EventEnvelope envelope = new EventEnvelope(key, event);
         String value = serializeEnvelope(envelope);
 
+        // -- the key of the record is an aggregate Id to ensure the order of the events for the same aggregate
         ProducerRecord<String, String> record = new ProducerRecord<>(topic, event.id.toString(), value);
         producer.send(record);
     }

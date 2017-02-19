@@ -49,10 +49,12 @@ public class KafkaCommandListener implements CommandListener, Managed {
                     .collect(Collectors.toList());
 
             consumer.subscribe(actionTopics);
+            LOG.info("Subscribed for [" + actionTopics + "]");
 
             while (!closed.get()) {
                 ConsumerRecords<String, String> records = consumer.poll(10000);
                 for (ConsumerRecord<String, String> record : records) {
+                    LOG.debug("Received record [" + record + "] from [" + record.topic() + "]");
                     try {
                         String action = record.topic().replace(Constants.COMMAND_TOPIC_PREFIX, "");
                         handleAction(action, record.value());

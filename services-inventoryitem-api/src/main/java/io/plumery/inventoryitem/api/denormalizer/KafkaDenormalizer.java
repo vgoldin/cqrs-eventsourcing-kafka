@@ -24,6 +24,7 @@ import java.util.Properties;
  * Created by veniamin on 13/02/2017.
  */
 public class KafkaDenormalizer implements Managed {
+    private static final String INVENTORY_ITEM_TOPIC = "InventoryItem";
     private KafkaStreams kafkaStreams;
 
     @Override
@@ -38,7 +39,7 @@ public class KafkaDenormalizer implements Managed {
 
         KStreamBuilder builder = new KStreamBuilder();
         KStream<String, EventEnvelope>[] filteredStreams = builder
-                .stream(Serdes.String(), envelopeSerde, "InventoryItem")
+                .stream(Serdes.String(), envelopeSerde, INVENTORY_ITEM_TOPIC)
                 .selectKey((k, v) -> v.eventType)
                 .branch(inventoryItemCreated, inventoryItemRenamed, inventoryItemDeactivated);
 

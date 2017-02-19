@@ -6,6 +6,7 @@ import com.hazelcast.core.IMap;
 import io.plumery.core.ActionHandler;
 import io.plumery.inventoryitem.api.core.EventEnvelope;
 import io.plumery.inventoryitem.api.core.InventoryItemListItem;
+import io.plumery.inventoryitem.api.denormalizer.Constant;
 import io.plumery.inventoryitem.api.denormalizer.hazelcast.HazelcastManaged;
 import io.plumery.inventoryitem.core.events.InventoryItemDeactivated;
 import io.plumery.inventoryitem.core.events.InventoryItemRenamed;
@@ -13,8 +14,6 @@ import org.apache.kafka.streams.processor.AbstractProcessor;
 
 public class InventoryItemDeactivatedHandler extends AbstractProcessor<String, EventEnvelope>
         implements ActionHandler<InventoryItemDeactivated> {
-    private static final String INVENTORY_ITEMS_MAP = "inventoryItems";
-
     private final ObjectMapper mapper;
     private final HazelcastInstance hazelcastInstance;
 
@@ -51,6 +50,6 @@ public class InventoryItemDeactivatedHandler extends AbstractProcessor<String, E
     }
 
     private IMap<String, InventoryItemListItem> getInventoryItemsMap() {
-        return hazelcastInstance.getMap(INVENTORY_ITEMS_MAP);
+        return hazelcastInstance.getMap(Constant.INVENTORY_ITEMS_MAP);
     }
 }

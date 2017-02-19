@@ -7,11 +7,14 @@ import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.kafka.KafkaEventStore;
 import io.plumery.eventstore.local.LocalEventStore;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by veniamin on 10/02/2017.
  */
 public class EventStoreFactory {
+    private static Logger LOG = LoggerFactory.getLogger(EventStoreFactory.class);
     private static final String KAFKA = "kafka";
     private static final String LOCAL = "local";
 
@@ -51,6 +54,10 @@ public class EventStoreFactory {
         } else {
             eventStore = new LocalEventStore(publisher);
         }
+
+        LOG.info("Configured EventStore ["+ eventStore.getClass().getSimpleName() +
+                "] with Events Package [" + eventsPackage + "] and Publisher ["
+                + publisher.getClass().getSimpleName() + "]");
 
         return eventStore;
     }

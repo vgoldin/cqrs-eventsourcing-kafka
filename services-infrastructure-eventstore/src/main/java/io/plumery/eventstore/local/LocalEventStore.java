@@ -8,6 +8,8 @@ import io.plumery.core.Event;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.EventDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.ConcurrentModificationException;
@@ -16,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LocalEventStore implements EventStore {
+    private static Logger LOG = LoggerFactory.getLogger(LocalEventStore.class);
     private final EventPublisher eventPublisher;
     private final Map<String, List<EventDescriptor>> storage = new ConcurrentHashMap<>();
 
@@ -34,6 +37,7 @@ public class LocalEventStore implements EventStore {
 
     @Override
     public void saveEvents(String streamName, String aggregateId, Iterable<? extends Event> events, int expectedVersion) {
+        LOG.debug("Saving events for [" + streamName + "] with Id [" + aggregateId + "]");
         List<EventDescriptor> eventDescriptors;
         if (!storage.containsKey(aggregateId)) {
             eventDescriptors = Lists.newArrayList();

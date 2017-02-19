@@ -24,6 +24,13 @@ import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * This Event Store only shows the possible way of implementing an Event Store using Kafka topics,
+ * however, it could not be used in a real life scenario due to a huge amount of potential topics,
+ * that is against Kafka distributed core
+ *
+ * @deprecated
+ */
 public class KafkaEventStore implements EventStore {
     private static final String EVENTSTORE_CONSUMER_SUFFIX = ".EventStore";
     private final String eventsPackage;

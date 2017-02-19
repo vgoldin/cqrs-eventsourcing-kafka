@@ -8,10 +8,13 @@ import io.plumery.core.Event;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.EventDescriptor;
+import jdbm.RecordManager;
+import jdbm.RecordManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LocalEventStore implements EventStore {
     private static Logger LOG = LoggerFactory.getLogger(LocalEventStore.class);
+    private static final String EVENTSTORE_MAP = "eventStore";
     private final EventPublisher eventPublisher;
-    private final Map<String, List<EventDescriptor>> storage = new ConcurrentHashMap<>();
+    private final Map<String, List<EventDescriptor>> storage;
 
     private final Function<EventDescriptor, Event> descriptorToEvent = new Function<EventDescriptor, Event>() {
         @Nullable
@@ -32,6 +36,13 @@ public class LocalEventStore implements EventStore {
     };
 
     public LocalEventStore(EventPublisher eventPublisher) {
+        try {
+            RecordManager recMan = RecordManagerFactory.createRecordManager(LocalEventStore.class.getSimpleName());
+            storage = recMan.treeMap(EVENTSTORE_MAP);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         this.eventPublisher = eventPublisher;
     }
 
@@ -60,6 +71,8 @@ public class LocalEventStore implements EventStore {
             eventDescriptors.add(new EventDescriptor(aggregateId, event, version));
             eventPublisher.publish(streamName, event);
         }
+
+        storage.put(aggregateId, eventDescriptors);
     }
 
     @Override

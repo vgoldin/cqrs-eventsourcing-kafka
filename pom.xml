@@ -28,6 +28,7 @@
         <module>services-inventoryitem-api</module>
         <module>services-inventoryitem-domain</module>
         <module>services-parent</module>
+        <module>services-intentoryitem-schema</module>
     </modules>
 
     <build>
@@ -35,6 +36,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

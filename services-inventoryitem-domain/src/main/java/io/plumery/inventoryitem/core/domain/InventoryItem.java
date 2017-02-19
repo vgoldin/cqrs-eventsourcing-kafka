@@ -12,14 +12,15 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class InventoryItem extends AggregateRoot {
     private Boolean activated;
+    private String name;
 
     @SuppressWarnings("unused")
     private InventoryItem() {}
 
     public InventoryItem(ID id, String name) {
         InventoryItemCreated event = new InventoryItemCreated()
-            .withName(name)
-            .withInventoryItemId(id.toString());
+            .withName(name);
+        event.id = id;
 
         applyChange(event);
     }
@@ -44,6 +45,11 @@ public class InventoryItem extends AggregateRoot {
     public void deactivate() {
         if(!activated) throw new IllegalStateException("already deactivated");
         applyChange(new InventoryItemDeactivated(id));
+    }
+
+
+    private void apply(InventoryItemRenamed e) {
+        name = e.newName;
     }
 
     private void apply(InventoryItemCreated e) {

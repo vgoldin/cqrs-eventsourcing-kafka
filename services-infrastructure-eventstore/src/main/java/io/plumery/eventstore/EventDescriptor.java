@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.plumery.core.Event;
 
-public class EventDescriptor {
+import java.io.Serializable;
+
+public class EventDescriptor implements Serializable{
     public final String aggregateId;
     public final Event event;
     public final int version;

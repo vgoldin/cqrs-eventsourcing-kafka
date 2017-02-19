@@ -25,6 +25,7 @@ public class LocalEventStore implements EventStore {
     private static final String EVENTSTORE_MAP = "eventStore";
     private final EventPublisher eventPublisher;
     private final Map<String, List<EventDescriptor>> storage;
+    private final RecordManager recMan;
 
     private final Function<EventDescriptor, Event> descriptorToEvent = new Function<EventDescriptor, Event>() {
         @Nullable
@@ -37,8 +38,10 @@ public class LocalEventStore implements EventStore {
 
     public LocalEventStore(EventPublisher eventPublisher) {
         try {
-            RecordManager recMan = RecordManagerFactory.createRecordManager(LocalEventStore.class.getSimpleName());
+            recMan = RecordManagerFactory.createRecordManager(LocalEventStore.class.getSimpleName());
             storage = recMan.treeMap(EVENTSTORE_MAP);
+
+            addShutdownHook();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,13 +55,12 @@ public class LocalEventStore implements EventStore {
         List<EventDescriptor> eventDescriptors;
         if (!storage.containsKey(aggregateId)) {
             eventDescriptors = Lists.newArrayList();
-
-            storage.put(aggregateId, eventDescriptors);
         } else {
             eventDescriptors = storage.get(aggregateId);
 
-            if (eventDescriptors.get(eventDescriptors.size() - 1).version != expectedVersion && expectedVersion != -1) {
-                throw new ConcurrentModificationException();
+            int actualVersion = eventDescriptors.get(eventDescriptors.size() - 1).version;
+            if (actualVersion != expectedVersion && expectedVersion != -1) {
+                throw new ConcurrentModificationException("The actual version is ["+actualVersion+"] and the expected version is ["+expectedVersion+"]");
             }
         }
 
@@ -73,6 +75,11 @@ public class LocalEventStore implements EventStore {
         }
 
         storage.put(aggregateId, eventDescriptors);
+        try {
+            recMan.commit();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -82,5 +89,14 @@ public class LocalEventStore implements EventStore {
         }
 
         return Lists.newArrayList();
+    }
+
+    private void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                recMan.close();
+            } catch (IOException e) {
+            }
+        }));
     }
 }

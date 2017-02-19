@@ -61,6 +61,7 @@ public class KafkaCommandListener implements CommandListener, Managed {
 
                         consumer.commitSync();
                     } catch (Exception ex) {
+                        //TODO: Publish error application event
                         LOG.error("Error handling the record", ex);
                     }
                 }

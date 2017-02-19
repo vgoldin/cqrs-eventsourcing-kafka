@@ -1,5 +1,6 @@
 package io.plumery.core;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -7,7 +8,7 @@ import java.util.UUID;
  *
  * @author V.Goldin
  */
-public class ID {
+public class ID implements Serializable {
     private final String id;
 
     private ID(String id) {

@@ -1,5 +1,7 @@
 package io.plumery;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
@@ -7,10 +9,10 @@ import io.plumery.core.ID;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.core.infrastructure.Repository;
-import io.plumery.eventstore.serializer.IDSerializer;
+import io.plumery.core.serializer.IDSerializer;
 import io.plumery.inventoryitem.core.command.handler.*;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
-import io.plumery.inventoryitem.core.domain.event.InventoryItemCreated;
+import io.plumery.inventoryitem.core.events.InventoryItemCreated;
 import io.plumery.inventoryitem.core.infrastructure.InventoryItemRepository;
 import io.plumery.messaging.ActionHandlerResolver;
 
@@ -35,11 +37,13 @@ public class InventoryItemDomain extends Application<InventoryItemDomainConfigur
     }
 
     private static void configureObjectMapper(Environment environment) {
-        environment.getObjectMapper().findAndRegisterModules();
+        ObjectMapper mapper = environment.getObjectMapper();
+        mapper.findAndRegisterModules();
 
         SimpleModule module = new SimpleModule();
         module.addSerializer(ID.class, new IDSerializer());
-        environment.getObjectMapper().registerModule(module);
+        mapper.registerModule(module);
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
     private static void registerCommandHandlers(ActionHandlerResolver resolver, Repository<InventoryItem> repository) {

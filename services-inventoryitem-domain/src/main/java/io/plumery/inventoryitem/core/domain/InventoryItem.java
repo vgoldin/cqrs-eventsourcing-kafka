@@ -2,7 +2,11 @@ package io.plumery.inventoryitem.core.domain;
 
 import io.plumery.core.AggregateRoot;
 import io.plumery.core.ID;
-import io.plumery.inventoryitem.core.domain.event.*;
+import io.plumery.inventoryitem.core.domain.event.InventoryItemDeactivated;
+import io.plumery.inventoryitem.core.domain.event.InventoryItemRenamed;
+import io.plumery.inventoryitem.core.domain.event.ItemsCheckedInToInventory;
+import io.plumery.inventoryitem.core.domain.event.ItemsRemovedFromInventory;
+import io.plumery.inventoryitem.core.events.InventoryItemCreated;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -13,7 +17,11 @@ public class InventoryItem extends AggregateRoot {
     private InventoryItem() {}
 
     public InventoryItem(ID id, String name) {
-        applyChange(new InventoryItemCreated(id, name, 0));
+        InventoryItemCreated event = new InventoryItemCreated()
+            .withName(name)
+            .withInventoryItemId(id.toString());
+
+        applyChange(event);
     }
 
 

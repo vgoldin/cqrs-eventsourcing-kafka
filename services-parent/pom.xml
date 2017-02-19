@@ -22,6 +22,7 @@
         <logback.version>1.1.7</logback.version>
         <jsr305.version>3.0.1</jsr305.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+        <slf4j.version>1.7.21</slf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -86,6 +87,16 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-streams</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,4 +1,4 @@
-package io.plumery.eventstore.serializer;
+package io.plumery.core.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

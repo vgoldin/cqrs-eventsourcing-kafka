@@ -5,6 +5,7 @@ import io.plumery.inventoryitem.api.core.InventoryItem;
 import io.plumery.inventoryitem.api.core.InventoryItemListItem;
 import io.plumery.inventoryitem.api.query.InventoryItemsQuery;
 import io.plumery.inventoryitem.core.commands.CreateInventoryItem;
+import io.plumery.inventoryitem.core.commands.DeactivateInventoryItem;
 import io.plumery.inventoryitem.core.commands.RenameInventoryItem;
 
 import javax.ws.rs.*;
@@ -40,13 +41,26 @@ public class InventoryItemResource {
     }
 
     @PUT
-    public Response rename(InventoryItem inventoryItem) {
+    @Path("/{id}")
+    public Response rename(@PathParam("id") String id, InventoryItem inventoryItem) {
         RenameInventoryItem command = new RenameInventoryItem()
-                .withInventoryItemId(inventoryItem.inventoryItemId)
+                .withInventoryItemId(id)
                 .withNewName(inventoryItem.name);
 
         command.originalVersion = inventoryItem.version;
 
+        dispatcher.dispatch(command);
+
+        return Response.status(202).build();
+    }
+
+    @POST
+    @Path("/{id}/deactivate")
+    public Response deactivate(@PathParam("id") String id, InventoryItem inventoryItem) {
+        DeactivateInventoryItem command = new DeactivateInventoryItem()
+                .withInventoryItemId(id);
+
+        command.originalVersion = inventoryItem.version;
         dispatcher.dispatch(command);
 
         return Response.status(202).build();

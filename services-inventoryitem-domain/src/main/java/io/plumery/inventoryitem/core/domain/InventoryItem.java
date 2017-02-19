@@ -2,11 +2,11 @@ package io.plumery.inventoryitem.core.domain;
 
 import io.plumery.core.AggregateRoot;
 import io.plumery.core.ID;
-import io.plumery.inventoryitem.core.domain.event.InventoryItemDeactivated;
-import io.plumery.inventoryitem.core.domain.event.InventoryItemRenamed;
 import io.plumery.inventoryitem.core.domain.event.ItemsCheckedInToInventory;
 import io.plumery.inventoryitem.core.domain.event.ItemsRemovedFromInventory;
 import io.plumery.inventoryitem.core.events.InventoryItemCreated;
+import io.plumery.inventoryitem.core.events.InventoryItemDeactivated;
+import io.plumery.inventoryitem.core.events.InventoryItemRenamed;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -18,17 +18,20 @@ public class InventoryItem extends AggregateRoot {
     private InventoryItem() {}
 
     public InventoryItem(ID id, String name) {
-        InventoryItemCreated event = new InventoryItemCreated()
+        InventoryItemCreated e = new InventoryItemCreated()
             .withName(name);
-        event.id = id;
-
-        applyChange(event);
+        e.id = id;
+        applyChange(e);
     }
 
 
     public void changeName(String newName) {
         if (isNullOrEmpty(newName)) throw new IllegalArgumentException("newName");
-        applyChange(new InventoryItemRenamed(id, newName));
+
+        InventoryItemRenamed e = new InventoryItemRenamed()
+                .withNewName(newName);
+        e.id = id;
+        applyChange(e);
     }
 
     public void remove(Integer count) {
@@ -44,12 +47,15 @@ public class InventoryItem extends AggregateRoot {
 
     public void deactivate() {
         if(!activated) throw new IllegalStateException("already deactivated");
-        applyChange(new InventoryItemDeactivated(id));
+
+        InventoryItemDeactivated e = new InventoryItemDeactivated();
+        e.id = id;
+        applyChange(e);
     }
 
 
     private void apply(InventoryItemRenamed e) {
-        name = e.newName;
+        name = e.getNewName();
     }
 
     private void apply(InventoryItemCreated e) {

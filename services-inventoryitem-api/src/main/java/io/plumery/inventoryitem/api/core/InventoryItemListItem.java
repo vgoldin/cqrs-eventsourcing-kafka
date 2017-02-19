@@ -9,4 +9,5 @@ public class InventoryItemListItem implements Serializable {
     public String id;
     public String name;
     public int version;
+    public boolean active = true;
 }

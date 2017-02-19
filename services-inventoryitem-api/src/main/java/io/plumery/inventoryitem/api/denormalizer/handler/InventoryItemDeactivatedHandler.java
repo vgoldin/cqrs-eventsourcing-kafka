@@ -7,18 +7,18 @@ import io.plumery.core.ActionHandler;
 import io.plumery.inventoryitem.api.core.EventEnvelope;
 import io.plumery.inventoryitem.api.core.InventoryItemListItem;
 import io.plumery.inventoryitem.api.denormalizer.hazelcast.HazelcastManaged;
-import io.plumery.inventoryitem.core.events.InventoryItemCreated;
+import io.plumery.inventoryitem.core.events.InventoryItemDeactivated;
 import io.plumery.inventoryitem.core.events.InventoryItemRenamed;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 
-public class InventoryItemRenamedHandler extends AbstractProcessor<String, EventEnvelope>
-        implements ActionHandler<InventoryItemRenamed> {
+public class InventoryItemDeactivatedHandler extends AbstractProcessor<String, EventEnvelope>
+        implements ActionHandler<InventoryItemDeactivated> {
     private static final String INVENTORY_ITEMS_MAP = "inventoryItems";
 
     private final ObjectMapper mapper;
     private final HazelcastInstance hazelcastInstance;
 
-    public InventoryItemRenamedHandler() {
+    public InventoryItemDeactivatedHandler() {
         this.mapper = new ObjectMapper();
         this.hazelcastInstance = HazelcastManaged.getInstance();
     }
@@ -32,21 +32,21 @@ public class InventoryItemRenamedHandler extends AbstractProcessor<String, Event
     }
 
     @Override
-    public void handle(InventoryItemRenamed event) {
+    public void handle(InventoryItemDeactivated event) {
         IMap<String, InventoryItemListItem> inventoryItems = getInventoryItemsMap();
 
         String id = event.id.toString();
 
         InventoryItemListItem item = inventoryItems.get(id);
         if (item != null) {
-            item.name = event.getNewName();
+            item.active = false;
         }
 
         inventoryItems.put(id, item);
     }
 
-    private InventoryItemRenamed deserializeEvent(EventEnvelope value) {
-        InventoryItemRenamed event = mapper.convertValue(value.eventData, InventoryItemRenamed.class);
+    private InventoryItemDeactivated deserializeEvent(EventEnvelope value) {
+        InventoryItemDeactivated event = mapper.convertValue(value.eventData, InventoryItemDeactivated.class);
         return event;
     }
 

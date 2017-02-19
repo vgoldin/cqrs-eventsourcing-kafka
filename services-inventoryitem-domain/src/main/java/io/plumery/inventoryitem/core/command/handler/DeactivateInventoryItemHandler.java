@@ -1,8 +1,9 @@
 package io.plumery.inventoryitem.core.command.handler;
 
 import io.plumery.core.CommandHandler;
+import io.plumery.core.ID;
 import io.plumery.core.infrastructure.Repository;
-import io.plumery.inventoryitem.core.command.DeactivateInventoryItem;
+import io.plumery.inventoryitem.core.commands.DeactivateInventoryItem;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
 
 public class DeactivateInventoryItemHandler implements CommandHandler<DeactivateInventoryItem> {
@@ -14,7 +15,7 @@ public class DeactivateInventoryItemHandler implements CommandHandler<Deactivate
 
     @Override
     public void handle(DeactivateInventoryItem command) {
-        InventoryItem item = repository.getById(command.inventoryItemId);
+        InventoryItem item = repository.getById(ID.fromObject(command.getInventoryItemId()));
         item.deactivate();
         repository.save(item, command.originalVersion);
     }

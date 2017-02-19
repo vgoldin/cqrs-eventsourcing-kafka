@@ -1,8 +1,9 @@
 package io.plumery.inventoryitem.core.command.handler;
 
 import io.plumery.core.CommandHandler;
+import io.plumery.core.ID;
 import io.plumery.core.infrastructure.Repository;
-import io.plumery.inventoryitem.core.command.RenameInventoryItem;
+import io.plumery.inventoryitem.core.commands.RenameInventoryItem;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
 
 public class RenameInventoryCommandHandler implements CommandHandler<RenameInventoryItem> {
@@ -14,8 +15,8 @@ public class RenameInventoryCommandHandler implements CommandHandler<RenameInven
 
     @Override
     public void handle(RenameInventoryItem command) {
-        InventoryItem item = repository.getById(command.inventoryItemId);
-        item.changeName(command.newName);
+        InventoryItem item = repository.getById(ID.fromObject(command.getInventoryItemId()));
+        item.changeName(command.getNewName());
         repository.save(item, command.originalVersion);
     }
 }

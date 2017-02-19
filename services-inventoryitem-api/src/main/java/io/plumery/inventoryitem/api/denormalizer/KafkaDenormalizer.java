@@ -2,11 +2,14 @@ package io.plumery.inventoryitem.api.denormalizer;
 
 import io.dropwizard.lifecycle.Managed;
 import io.plumery.inventoryitem.api.denormalizer.handler.InventoryItemCreatedHandler;
+import io.plumery.inventoryitem.api.denormalizer.handler.InventoryItemDeactivatedHandler;
 import io.plumery.inventoryitem.api.denormalizer.handler.InventoryItemRenamedHandler;
 import io.plumery.inventoryitem.api.denormalizer.serialize.JsonDeserializer;
 import io.plumery.inventoryitem.api.denormalizer.serialize.JsonSerializer;
 import io.plumery.inventoryitem.api.core.EventEnvelope;
 import io.plumery.inventoryitem.core.events.InventoryItemCreated;
+import io.plumery.inventoryitem.core.events.InventoryItemDeactivated;
+import io.plumery.inventoryitem.core.events.InventoryItemRenamed;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.*;
 import org.apache.kafka.streams.KafkaStreams;
@@ -30,8 +33,8 @@ public class KafkaDenormalizer implements Managed {
         Serde<EventEnvelope> envelopeSerde = initializeEnvelopeSerde();
 
         Predicate<String, EventEnvelope> inventoryItemCreated = (k, v) -> k.equals(InventoryItemCreated.class.getSimpleName());
-        Predicate<String, EventEnvelope> inventoryItemRenamed =  (k, v) -> k.equals("InventoryItemRenamed");
-        Predicate<String, EventEnvelope> inventoryItemDeactivated = (k, v) -> k.equals("InventoryItemDeactivated");
+        Predicate<String, EventEnvelope> inventoryItemRenamed =  (k, v) -> k.equals(InventoryItemRenamed.class.getSimpleName());
+        Predicate<String, EventEnvelope> inventoryItemDeactivated = (k, v) -> k.equals(InventoryItemDeactivated.class.getSimpleName());
 
         KStreamBuilder builder = new KStreamBuilder();
         KStream<String, EventEnvelope>[] filteredStreams = builder
@@ -41,6 +44,7 @@ public class KafkaDenormalizer implements Managed {
 
         filteredStreams[0].process(InventoryItemCreatedHandler::new);
         filteredStreams[1].process(InventoryItemRenamedHandler::new);
+        filteredStreams[2].process(InventoryItemDeactivatedHandler::new);
 
         kafkaStreams = new KafkaStreams(builder, streamsConfig);
         kafkaStreams.cleanUp(); // -- only because we are using in-memory

@@ -2,6 +2,7 @@ package io.plumery.inventoryitem.api.denormalizer;
 
 import io.dropwizard.lifecycle.Managed;
 import io.plumery.inventoryitem.api.denormalizer.handler.InventoryItemCreatedHandler;
+import io.plumery.inventoryitem.api.denormalizer.handler.InventoryItemRenamedHandler;
 import io.plumery.inventoryitem.api.denormalizer.serialize.JsonDeserializer;
 import io.plumery.inventoryitem.api.denormalizer.serialize.JsonSerializer;
 import io.plumery.inventoryitem.api.core.EventEnvelope;
@@ -39,6 +40,7 @@ public class KafkaDenormalizer implements Managed {
                 .branch(inventoryItemCreated, inventoryItemRenamed, inventoryItemDeactivated);
 
         filteredStreams[0].process(InventoryItemCreatedHandler::new);
+        filteredStreams[1].process(InventoryItemRenamedHandler::new);
 
         kafkaStreams = new KafkaStreams(builder, streamsConfig);
         kafkaStreams.cleanUp(); // -- only because we are using in-memory

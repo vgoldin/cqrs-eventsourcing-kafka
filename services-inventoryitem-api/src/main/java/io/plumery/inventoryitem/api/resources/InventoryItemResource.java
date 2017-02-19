@@ -5,6 +5,7 @@ import io.plumery.inventoryitem.api.core.InventoryItem;
 import io.plumery.inventoryitem.api.core.InventoryItemListItem;
 import io.plumery.inventoryitem.api.query.InventoryItemsQuery;
 import io.plumery.inventoryitem.core.commands.CreateInventoryItem;
+import io.plumery.inventoryitem.core.commands.RenameInventoryItem;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,6 +33,19 @@ public class InventoryItemResource {
         CreateInventoryItem command = new CreateInventoryItem()
             .withInventoryItemId(inventoryItem.inventoryItemId)
             .withName(inventoryItem.name);
+
+        dispatcher.dispatch(command);
+
+        return Response.status(202).build();
+    }
+
+    @PUT
+    public Response rename(InventoryItem inventoryItem) {
+        RenameInventoryItem command = new RenameInventoryItem()
+                .withInventoryItemId(inventoryItem.inventoryItemId)
+                .withNewName(inventoryItem.name);
+
+        command.originalVersion = inventoryItem.version;
 
         dispatcher.dispatch(command);
 

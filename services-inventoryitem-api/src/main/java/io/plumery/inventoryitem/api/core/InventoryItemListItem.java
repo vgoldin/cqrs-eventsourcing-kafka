@@ -8,4 +8,5 @@ import java.io.Serializable;
 public class InventoryItemListItem implements Serializable {
     public String id;
     public String name;
+    public int version;
 }

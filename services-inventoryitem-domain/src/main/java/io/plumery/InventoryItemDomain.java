@@ -33,7 +33,7 @@ public class InventoryItemDomain extends Application<InventoryItemDomainConfigur
 
         registerCommandHandlers(resolver, repository);
 
-        configuration.getCommandListenerFactory().build(environment);
+        configuration.getCommandListenerFactory().build(environment, publisher, InventoryItem.class);
     }
 
     private static void configureObjectMapper(Environment environment) {

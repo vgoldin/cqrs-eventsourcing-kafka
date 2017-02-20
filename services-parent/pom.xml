@@ -24,6 +24,7 @@
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
         <slf4j.version>1.7.21</slf4j.version>
         <jdbm.version>2.0.1</jdbm.version>
+        <jersey.version>2.23.2</jersey.version>
     </properties>
 
     <dependencyManagement>
@@ -103,6 +104,11 @@
                 <groupId>org.fusesource.jdbm</groupId>
                 <artifactId>jdbm</artifactId>
                 <version>${jdbm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-sse</artifactId>
+                <version>${jersey.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

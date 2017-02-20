@@ -5,6 +5,11 @@ server:
   adminConnectors:
     - type: http
       port: 9801
+  gzip:
+    enabled: false
 
 commandDispatcher:
+  zookeeper: 127.0.0.1:9092
+
+streamBroadcaster:
   zookeeper: 127.0.0.1:9092

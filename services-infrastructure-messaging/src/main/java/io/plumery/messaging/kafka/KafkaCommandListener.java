@@ -5,7 +5,9 @@ import io.dropwizard.lifecycle.Managed;
 import io.plumery.core.Action;
 import io.plumery.core.ActionHandler;
 import io.plumery.core.infrastructure.CommandListener;
+import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.messaging.ActionHandlerResolver;
+import io.plumery.messaging.utils.EventUtils;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -25,8 +28,12 @@ public class KafkaCommandListener implements CommandListener, Managed {
     private final ActionHandlerResolver resolver;
     private final AtomicBoolean closed = new AtomicBoolean(false);
     private final ObjectMapper objectMapper;
+    private final EventPublisher applicationEventPublisher;
+    private final String aggregateRootName;
 
-    public KafkaCommandListener(String zookeeper, String groupId, ObjectMapper objectMapper) {
+    public KafkaCommandListener(String zookeeper, String groupId, ObjectMapper objectMapper,
+                                EventPublisher applicationEventPublisher,
+                                String aggregateRootName) {
         resolver = ActionHandlerResolver.getCurrent();
 
         Properties props = new Properties();
@@ -39,6 +46,8 @@ public class KafkaCommandListener implements CommandListener, Managed {
 
         this.consumer = new KafkaConsumer(props);
         this.objectMapper = objectMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.aggregateRootName = aggregateRootName;
     }
 
     @Override
@@ -61,8 +70,10 @@ public class KafkaCommandListener implements CommandListener, Managed {
 
                         consumer.commitSync();
                     } catch (Exception ex) {
-                        //TODO: Publish error application event
                         LOG.error("Error handling the record", ex);
+
+                        applicationEventPublisher.publish(aggregateRootName + ".ApplicationEvents",
+                                EventUtils.exceptionToEvent(UUID.randomUUID().toString(), ex)); //FIXME: get command ID instead
                     }
                 }
             }

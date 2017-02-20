@@ -39,9 +39,8 @@ public class InventoryItemRenamedHandler extends AbstractProcessor<String, Event
         InventoryItemListItem item = inventoryItems.get(id);
         if (item != null) {
             item.name = event.getNewName();
+            inventoryItems.put(id, item);
         }
-
-        inventoryItems.put(id, item);
     }
 
     private InventoryItemRenamed deserializeEvent(EventEnvelope value) {

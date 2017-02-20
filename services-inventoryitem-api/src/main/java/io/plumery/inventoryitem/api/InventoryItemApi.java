@@ -12,6 +12,8 @@ import io.plumery.inventoryitem.api.denormalizer.KafkaDenormalizer;
 import io.plumery.inventoryitem.api.denormalizer.hazelcast.HazelcastManaged;
 import io.plumery.inventoryitem.api.query.InventoryItemsQuery;
 import io.plumery.inventoryitem.api.resources.InventoryItemResource;
+import io.plumery.inventoryitem.api.stream.StreamBroadcaster;
+import org.glassfish.jersey.media.sse.SseFeature;
 
 public class InventoryItemApi extends Application<InventoryItemApiConfiguration> {
     public static void main(String[] args) throws Exception {
@@ -24,9 +26,16 @@ public class InventoryItemApi extends Application<InventoryItemApiConfiguration>
 
         CommandDispatcher commandDispatcher = configuration.getCommandDispatcherFactory().build(environment);
 
-        environment.jersey().register(new InventoryItemResource(new InventoryItemsQuery(), commandDispatcher));
+        environment.jersey().register(SseFeature.class);
+        environment.jersey().getResourceConfig().register(SseFeature.class);
+
+        InventoryItemResource resource = new InventoryItemResource(new InventoryItemsQuery(), commandDispatcher);
+        environment.jersey().register(resource);
         environment.lifecycle().manage(new KafkaDenormalizer());
         environment.lifecycle().manage(new HazelcastManaged());
+
+        StreamBroadcaster broadcaster = configuration.getStreamBroadcasterFactory().build(environment);
+        broadcaster.addObserver(resource);
     }
 
     private static void configureObjectMapper(Environment environment) {

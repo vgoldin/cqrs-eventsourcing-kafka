@@ -1,4 +1,4 @@
-# cqrs-eventsourcing-kafka
+# CQRS and Event Sourcing Implementation with Kafka
 
 # Structure
 

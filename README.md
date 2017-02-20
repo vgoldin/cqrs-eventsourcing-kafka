@@ -2,6 +2,7 @@
 
 # Structure
 Module | Purpose
+--- | --- | ---
 `services-core` | core marker interfaces shared between all other modules
 `services-infrastructure-eventstore` | event store implementation with JDBM 2.0
 `services-infrastructure-messaging` | event publisher and command listener implementation with Kafka

@@ -32,6 +32,14 @@ java -jar services-inventoryitem-api-1.0-SNAPSHOT.jar server application.yml
 cd services-inventoryitem-domain/target
 java -jar services-inventoryitem-domain-1.0-SNAPSHOT.jar server application.yml
 ```
+# Exposed APIs
+```
+GET     /inventory-items (io.plumery.inventoryitem.api.resources.InventoryItemResource)
+POST    /inventory-items (io.plumery.inventoryitem.api.resources.InventoryItemResource)
+GET     /inventory-items/events.stream (io.plumery.inventoryitem.api.resources.InventoryItemResource)
+PUT     /inventory-items/{id} (io.plumery.inventoryitem.api.resources.InventoryItemResource)
+POST    /inventory-items/{id}/deactivate (io.plumery.inventoryitem.api.resources.InventoryItemResource)
+```    
 
 # TODO
 * Get rid of ID.class 

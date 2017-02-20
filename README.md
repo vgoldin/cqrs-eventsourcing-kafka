@@ -1,7 +1,8 @@
 # cqrs-eventsourcing-kafka
 
-TODO
+# TODO
 
-1) Get rid of ID.class 
-2) Generate all the events and commands from JSON schema
-3) Add swagger documentation for API part
+* Get rid of ID.class 
+* Generate all the events and commands from JSON schema
+* Add swagger documentation for API part
+* Implement UI Micro-Service

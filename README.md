@@ -1,6 +1,13 @@
 # CQRS and Event Sourcing Implementation with Kafka
 
 # Structure
+Module | Purpose
+`services-core` | core marker interfaces shared between all other modules
+`services-infrastructure-eventstore` | event store implementation with JDBM 2.0
+`services-infrastructure-messaging` | event publisher and command listener implementation with Kafka
+`services-intentoryitem-schema` | json-schema's of all the events and commands used in API and Domain services
+`services-inventoryitem-api` | API micro-service, exposing RESTfull API, creating Projectin with Hazelcast and dispatching commands to Kafka
+`services-inventoryitem-domain` | Domain micro-service, encapsulating Aggregate Root, handling commands and publishing events
 
 # Pre-Requisities
 * JDK 1.8

@@ -1,5 +1,11 @@
 # CQRS and Event Sourcing Implementation with Kafka
 
+# Introduction
+The aim of this small project is to illustrate the possibility of applying CQRS, Domain-Driven Design and Event Sourcing in a simple way, enabling Reactive architecture and leveraging Kafka as a distributed message broker
+
+See:
+https://speakerdeck.com/vgoldin/es-and-kafka
+
 # Structure
 Module | Purpose
 --- | --- | ---

@@ -5,6 +5,7 @@ import io.dropwizard.lifecycle.Managed;
 import io.plumery.core.Action;
 import io.plumery.core.ActionHandler;
 import io.plumery.core.exception.ApplicationException;
+import io.plumery.core.exception.SystemException;
 import io.plumery.core.infrastructure.CommandListener;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.messaging.ActionHandlerResolver;
@@ -90,12 +91,11 @@ public class KafkaCommandListener implements CommandListener, Managed {
 
             LOG.error("Error handling the record. Error Id: [" +errorEventId+"]", ex);
             applicationEventPublisher.publish(aggregateRootName + ".ApplicationEvents",
-                    EventUtils.exceptionToEvent(errorEventId, ex));
+                    EventUtils.exceptionToEvent(new SystemException(errorEventId, ex)));
         } else {
             ApplicationException e = (ApplicationException) ex;
             applicationEventPublisher.publish(e.getAggregateRoot().getSimpleName() + ".ApplicationEvents",
-                    EventUtils.exceptionToEvent(e.getAggregateRootId().toString(),
-                            ex));
+                    EventUtils.exceptionToEvent(ex));
         }
     }
 

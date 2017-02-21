@@ -2,6 +2,7 @@ package io.plumery.inventoryitem.core.domain;
 
 import io.plumery.core.AggregateRoot;
 import io.plumery.core.ID;
+import io.plumery.core.exception.ApplicationException;
 import io.plumery.inventoryitem.core.domain.event.ItemsCheckedInToInventory;
 import io.plumery.inventoryitem.core.domain.event.ItemsRemovedFromInventory;
 import io.plumery.inventoryitem.core.events.InventoryItemCreated;
@@ -26,7 +27,8 @@ public class InventoryItem extends AggregateRoot {
 
 
     public void changeName(String newName) {
-        if (isNullOrEmpty(newName)) throw new IllegalArgumentException("newName");
+        if (isNullOrEmpty(newName)) throw new ApplicationException("'newName' should be provided", this.id,
+                this.getClass(), version);
 
         InventoryItemRenamed e = new InventoryItemRenamed()
                 .withNewName(newName);

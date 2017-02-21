@@ -5,36 +5,37 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.plumery.core.Event;
 import io.plumery.core.ID;
 import io.plumery.core.exception.ApplicationException;
+import io.plumery.core.exception.SystemException;
 
 public class EventUtils {
-    public static Event exceptionToEvent(String aggregateId, Exception ex) {
+    public static Event exceptionToEvent(Exception ex) {
         String message = ex.getMessage();
 
         if (ex instanceof ApplicationException) {
             ApplicationException e = (ApplicationException) ex;
+            String id = e.getAggregateRootId().toString();
 
-            return new ApplicationErrorEvent(
-                    message, aggregateId,
-                    e.getAction().getSimpleName());
-        } else {
-            return new SystemErrorEvent(message, aggregateId,
-                    ex.getClass().getName());
+            return new ApplicationErrorEvent(message, id, e.getVersion());
+        } else if (ex instanceof SystemException) {
+            SystemException e = (SystemException) ex;
+
+            return new SystemErrorEvent(message, e.getErrorEventId(), ex.getClass().getName());
         }
 
+        throw new IllegalArgumentException(ex.getClass().getSimpleName() + " is not supported.");
     }
 
     public static class ApplicationErrorEvent extends Event {
         public final String message;
-        public final String action;
 
         @JsonCreator
         public ApplicationErrorEvent(
                 @JsonProperty("message") String message,
                 @JsonProperty("aggregateId") String aggregateId,
-                @JsonProperty("action") String action) {
+                @JsonProperty("version") Integer version) {
             this.message = message;
             this.id = ID.fromObject(aggregateId);
-            this.action = action;
+            this.version = version;
         }
     }
 

@@ -9,17 +9,17 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class EventPublisherFactory {
     @NotEmpty
     @JsonProperty
-    private String zookeeper;
+    private String bootstrap;
 
-    public String getZookeeper() {
-        return zookeeper;
+    public String getBootstrap() {
+        return bootstrap;
     }
 
-    public void setZookeeper(String zookeeper) {
-        this.zookeeper = zookeeper;
+    public void setBootstrap(String bootstrap) {
+        this.bootstrap = bootstrap;
     }
 
     public EventPublisher build(Environment environment) {
-        return new KafkaEventPublisher(zookeeper, environment.getObjectMapper());
+        return new KafkaEventPublisher(bootstrap, environment.getObjectMapper());
     }
 }

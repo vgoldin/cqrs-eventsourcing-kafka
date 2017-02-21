@@ -9,17 +9,17 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class CommandDispatcherFactory {
     @NotEmpty
     @JsonProperty
-    private String zookeeper;
+    private String boostrap;
 
-    public void setZookeeper(String zookeeper) {
-        this.zookeeper = zookeeper;
+    public void setBoostrap(String boostrap) {
+        this.boostrap = boostrap;
     }
 
-    public String getZookeeper() {
-        return zookeeper;
+    public String getBoostrap() {
+        return boostrap;
     }
 
     public CommandDispatcher build(Environment environment) {
-        return new KafkaCommandDispatcher(zookeeper, environment.getObjectMapper());
+        return new KafkaCommandDispatcher(boostrap, environment.getObjectMapper());
     }
 }

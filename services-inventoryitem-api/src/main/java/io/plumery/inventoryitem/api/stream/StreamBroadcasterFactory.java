@@ -7,21 +7,21 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class StreamBroadcasterFactory {
     @NotEmpty
     @JsonProperty
-    private String zookeeper;
+    private String bootstrap;
 
-    public void setZookeeper(String zookeeper) {
-        this.zookeeper = zookeeper;
+    public void setBootstrap(String bootstrap) {
+        this.bootstrap = bootstrap;
     }
 
-    public String getZookeeper() {
-        return zookeeper;
+    public String getBootstrap() {
+        return bootstrap;
     }
 
     public StreamBroadcaster build(Environment environment) {
         StreamBroadcaster broadcaster =
                 new KafkaTopicBroadcaster(environment.getName(),
                         environment.getObjectMapper(),
-                        zookeeper);
+                        bootstrap);
 
         environment.lifecycle().manage(broadcaster);
 

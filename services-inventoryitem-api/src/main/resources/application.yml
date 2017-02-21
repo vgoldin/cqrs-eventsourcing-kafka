@@ -8,8 +8,5 @@ server:
   gzip:
     enabled: false
 
-commandDispatcher:
-  zookeeper: 127.0.0.1:9092
-
-streamBroadcaster:
-  zookeeper: 127.0.0.1:9092
+kafka:
+  bootstrap: 127.0.0.1:9092

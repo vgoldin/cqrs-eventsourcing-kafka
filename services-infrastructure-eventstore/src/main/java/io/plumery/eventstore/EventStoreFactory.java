@@ -18,19 +18,17 @@ public class EventStoreFactory {
     private static final String KAFKA = "kafka";
     private static final String LOCAL = "local";
 
-    @NotEmpty
-    @JsonProperty
-    private String zookeeper;
+    private String bootstrap;
 
     @JsonProperty
     private String type = LOCAL;
 
-    public void setZookeeper(String zookeeper) {
-        this.zookeeper = zookeeper;
+    public void setBootstrap(String bootstrap) {
+        this.bootstrap = bootstrap;
     }
 
-    public String getZookeeper() {
-        return zookeeper;
+    public String getBootstrap() {
+        return bootstrap;
     }
 
     public String getType() {
@@ -46,7 +44,7 @@ public class EventStoreFactory {
 
         if (type.equals(KAFKA)) {
             eventStore = new KafkaEventStore.Builder()
-                    .withZookeeper(zookeeper)
+                    .withZookeeper(bootstrap)
                     .withGroupId(enviroment.getName())
                     .withObjectMapper(enviroment.getObjectMapper())
                     .withEventsPackage(eventsPackage)

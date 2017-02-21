@@ -10,20 +10,20 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class CommandListenerFactory {
     @NotEmpty
     @JsonProperty
-    private String zookeeper;
+    private String boostrap;
 
-    public String getZookeeper() {
-        return zookeeper;
+    public String getBoostrap() {
+        return boostrap;
     }
 
-    public void setZookeeper(String zookeeper) {
-        this.zookeeper = zookeeper;
+    public void setBoostrap(String boostrap) {
+        this.boostrap = boostrap;
     }
 
     public CommandListener build(Environment environment,
                                  EventPublisher applicationEventPublisher, Class aggregateRoot) {
         KafkaCommandListener listener =
-                new KafkaCommandListener(zookeeper,
+                new KafkaCommandListener(boostrap,
                         environment.getName(),
                         environment.getObjectMapper(),
                         applicationEventPublisher,

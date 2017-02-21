@@ -6,11 +6,8 @@ server:
     - type: http
       port: 9802
 
-commandListener:
-  zookeeper: 127.0.0.1:9092
-
 eventStore:
-  zookeeper: 127.0.0.1:9092
+  type: local
 
-eventPublisher:
-  zookeeper: 127.0.0.1:9092
+kafka:
+  bootstrap: 127.0.0.1:9092

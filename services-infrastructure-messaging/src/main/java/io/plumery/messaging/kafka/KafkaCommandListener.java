@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dropwizard.lifecycle.Managed;
 import io.plumery.core.Action;
 import io.plumery.core.ActionHandler;
+import io.plumery.core.exception.ApplicationException;
 import io.plumery.core.infrastructure.CommandListener;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.messaging.ActionHandlerResolver;
@@ -71,10 +72,7 @@ public class KafkaCommandListener implements CommandListener, Managed {
 
                             consumer.commitSync();
                         } catch (Exception ex) {
-                            LOG.error("Error handling the record", ex);
-
-                            applicationEventPublisher.publish(aggregateRootName + ".ApplicationEvents",
-                                    EventUtils.exceptionToEvent(UUID.randomUUID().toString(), ex)); //FIXME: get command ID instead
+                            handleException(ex);
                         }
                     }
                 }
@@ -83,7 +81,22 @@ public class KafkaCommandListener implements CommandListener, Managed {
             } finally {
                 consumer.close();
             }
-        });
+        }).start();
+    }
+
+    private void handleException(Exception ex) {
+        if (!(ex instanceof ApplicationException)) {
+            String errorEventId = UUID.randomUUID().toString();
+
+            LOG.error("Error handling the record. Error Id: [" +errorEventId+"]", ex);
+            applicationEventPublisher.publish(aggregateRootName + ".ApplicationEvents",
+                    EventUtils.exceptionToEvent(errorEventId, ex));
+        } else {
+            ApplicationException e = (ApplicationException) ex;
+            applicationEventPublisher.publish(e.getAggregateRoot().getSimpleName() + ".ApplicationEvents",
+                    EventUtils.exceptionToEvent(e.getAggregateRootId().toString(),
+                            ex));
+        }
     }
 
     private void handleAction(String action, String value) {

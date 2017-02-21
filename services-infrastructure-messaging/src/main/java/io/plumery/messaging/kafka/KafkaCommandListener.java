@@ -52,36 +52,38 @@ public class KafkaCommandListener implements CommandListener, Managed {
 
     @Override
     public void start() throws Exception {
-        try {
-            List<String> actionTopics = resolver.getSupportedActions().stream()
-                    .map(s -> Constants.COMMAND_TOPIC_PREFIX + s)
-                    .collect(Collectors.toList());
+        new Thread(() -> {
+            try {
+                List<String> actionTopics = resolver.getSupportedActions().stream()
+                        .map(s -> Constants.COMMAND_TOPIC_PREFIX + s)
+                        .collect(Collectors.toList());
 
-            consumer.subscribe(actionTopics);
-            LOG.info("Subscribed for [" + actionTopics + "]");
+                consumer.subscribe(actionTopics);
+                LOG.info("Subscribed for [" + actionTopics + "]");
 
-            while (!closed.get()) {
-                ConsumerRecords<String, String> records = consumer.poll(10000);
-                for (ConsumerRecord<String, String> record : records) {
-                    LOG.debug("Received record [" + record + "] from [" + record.topic() + "]");
-                    try {
-                        String action = record.topic().replace(Constants.COMMAND_TOPIC_PREFIX, "");
-                        handleAction(action, record.value());
+                while (!closed.get()) {
+                    ConsumerRecords<String, String> records = consumer.poll(10000);
+                    for (ConsumerRecord<String, String> record : records) {
+                        LOG.debug("Received record [" + record + "] from [" + record.topic() + "]");
+                        try {
+                            String action = record.topic().replace(Constants.COMMAND_TOPIC_PREFIX, "");
+                            handleAction(action, record.value());
 
-                        consumer.commitSync();
-                    } catch (Exception ex) {
-                        LOG.error("Error handling the record", ex);
+                            consumer.commitSync();
+                        } catch (Exception ex) {
+                            LOG.error("Error handling the record", ex);
 
-                        applicationEventPublisher.publish(aggregateRootName + ".ApplicationEvents",
-                                EventUtils.exceptionToEvent(UUID.randomUUID().toString(), ex)); //FIXME: get command ID instead
+                            applicationEventPublisher.publish(aggregateRootName + ".ApplicationEvents",
+                                    EventUtils.exceptionToEvent(UUID.randomUUID().toString(), ex)); //FIXME: get command ID instead
+                        }
                     }
                 }
+            } catch (WakeupException e) {
+                if (!closed.get()) throw e;
+            } finally {
+                consumer.close();
             }
-        } catch (WakeupException e) {
-            if (!closed.get()) throw e;
-        } finally {
-            consumer.close();
-        }
+        });
     }
 
     private void handleAction(String action, String value) {

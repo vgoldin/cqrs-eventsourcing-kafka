@@ -1,3 +1,11 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 9902
+  adminConnectors:
+    - type: http
+      port: 9802
+
 commandListener:
   zookeeper: 127.0.0.1:9092
 

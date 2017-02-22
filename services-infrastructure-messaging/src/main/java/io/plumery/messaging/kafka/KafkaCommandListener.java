@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 public class KafkaCommandListener implements CommandListener, Managed {
     private static final Logger LOG = LoggerFactory.getLogger(KafkaCommandListener.class);
+    public static final String APPLICATION_EVENTS = ".ApplicationEvents";
 
     private final KafkaConsumer consumer;
     private final ActionHandlerResolver resolver;
@@ -32,6 +33,7 @@ public class KafkaCommandListener implements CommandListener, Managed {
     private final ObjectMapper objectMapper;
     private final EventPublisher applicationEventPublisher;
     private final String aggregateRootName;
+    private final String applicationEventsStream;
 
     public KafkaCommandListener(String zookeeper, String groupId, ObjectMapper objectMapper,
                                 EventPublisher applicationEventPublisher,
@@ -50,6 +52,8 @@ public class KafkaCommandListener implements CommandListener, Managed {
         this.objectMapper = objectMapper;
         this.applicationEventPublisher = applicationEventPublisher;
         this.aggregateRootName = aggregateRootName;
+
+        this.applicationEventsStream = aggregateRootName + APPLICATION_EVENTS;
     }
 
     @Override
@@ -67,13 +71,14 @@ public class KafkaCommandListener implements CommandListener, Managed {
                     ConsumerRecords<String, String> records = consumer.poll(10000);
                     for (ConsumerRecord<String, String> record : records) {
                         LOG.debug("Received record [" + record + "] from [" + record.topic() + "]");
+                        String action = record.topic().replace(Constants.COMMAND_TOPIC_PREFIX, "");
                         try {
-                            String action = record.topic().replace(Constants.COMMAND_TOPIC_PREFIX, "");
+                            LOG.debug("Handling action [" + action + "]");
                             handleAction(action, record.value());
 
                             consumer.commitSync();
                         } catch (Exception ex) {
-                            handleException(ex);
+                            handleException(action, ex);
                         }
                     }
                 }
@@ -85,18 +90,21 @@ public class KafkaCommandListener implements CommandListener, Managed {
         }).start();
     }
 
-    private void handleException(Exception ex) {
+    private void handleException(String action, Exception ex) {
+        Exception targetException;
         if (!(ex instanceof ApplicationException)) {
             String errorEventId = UUID.randomUUID().toString();
+            targetException = new SystemException(errorEventId, ex);
 
-            LOG.error("Error handling the record. Error Id: [" +errorEventId+"]", ex);
-            applicationEventPublisher.publish(aggregateRootName + ".ApplicationEvents",
-                    EventUtils.exceptionToEvent(new SystemException(errorEventId, ex)));
+            LOG.error("Error handling the record. Error Id: [" +errorEventId+"]", targetException);
         } else {
-            ApplicationException e = (ApplicationException) ex;
-            applicationEventPublisher.publish(e.getAggregateRoot().getSimpleName() + ".ApplicationEvents",
-                    EventUtils.exceptionToEvent(ex));
+            targetException = ex;
+            ((ApplicationException) targetException).setAction(action);
+
+            LOG.debug("Application error while handling the action: [" +action+"]", targetException);
         }
+
+        applicationEventPublisher.publish(applicationEventsStream, EventUtils.exceptionToEvent(targetException));
     }
 
     private void handleAction(String action, String value) {

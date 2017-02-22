@@ -35,14 +35,7 @@ public class InventoryItemDeactivatedHandler extends AbstractProcessor<String, E
         IMap<String, InventoryItemListItem> inventoryItems = getInventoryItemsMap();
 
         String id = event.id.toString();
-
-        InventoryItemListItem item = inventoryItems.get(id);
-        if (item != null) {
-            item.version = event.version;
-            item.active = false;
-        }
-
-        inventoryItems.put(id, item);
+        inventoryItems.delete(id);
     }
 
     private InventoryItemDeactivated deserializeEvent(EventEnvelope value) {

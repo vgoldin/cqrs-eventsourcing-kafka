@@ -38,6 +38,7 @@ public class InventoryItemDeactivatedHandler extends AbstractProcessor<String, E
 
         InventoryItemListItem item = inventoryItems.get(id);
         if (item != null) {
+            item.version = event.version;
             item.active = false;
         }
 

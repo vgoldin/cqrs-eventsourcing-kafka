@@ -46,6 +46,17 @@ GET     /inventory-items/events.stream (io.plumery.inventoryitem.api.resources.I
 PUT     /inventory-items/{id} (io.plumery.inventoryitem.api.resources.InventoryItemResource)
 POST    /inventory-items/{id}/deactivate (io.plumery.inventoryitem.api.resources.InventoryItemResource)
 ```    
+# Replaying Projection
+- Download and unzip Kafka
+- Change to KAFKA_HOME
+- Stop API Micro-Service
+- Execute the following command:
+```
+./bin/kafka-streams-application-reset.sh --application-id InventoryItemsDenormalizationApplication \
+                                      --input-topics InventoryItem \
+                                      --bootstrap-servers localhost:9092 \
+                                      --zookeeper localhost:2181
+```
 
 # TODO
 * Get rid of ID.class 

@@ -1,5 +1,6 @@
 package io.plumery.inventoryitem.api;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -13,7 +14,16 @@ import io.plumery.inventoryitem.api.denormalizer.hazelcast.HazelcastManaged;
 import io.plumery.inventoryitem.api.query.InventoryItemsQuery;
 import io.plumery.inventoryitem.api.resources.InventoryItemResource;
 import io.plumery.inventoryitem.api.stream.StreamBroadcaster;
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.media.sse.SseFeature;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import java.util.EnumSet;
+
+import static org.eclipse.jetty.servlets.CrossOriginFilter.*;
 
 public class InventoryItemApi extends Application<InventoryItemApiConfiguration> {
     public static void main(String[] args) throws Exception {
@@ -26,8 +36,8 @@ public class InventoryItemApi extends Application<InventoryItemApiConfiguration>
 
         CommandDispatcher commandDispatcher = configuration.getCommandDispatcherFactory().build(environment);
 
+        environment.jersey().register(new ApiListingResource());
         environment.jersey().register(SseFeature.class);
-        environment.jersey().getResourceConfig().register(SseFeature.class);
 
         InventoryItemResource resource = new InventoryItemResource(new InventoryItemsQuery(), commandDispatcher);
         environment.jersey().register(resource);
@@ -36,6 +46,23 @@ public class InventoryItemApi extends Application<InventoryItemApiConfiguration>
 
         StreamBroadcaster broadcaster = configuration.getStreamBroadcasterFactory().build(environment);
         broadcaster.addObserver(resource);
+
+        configureSwagger(environment);
+    }
+
+    private void configureSwagger(Environment environment) {
+        BeanConfig config = new BeanConfig();
+        config.setTitle("Inventory Item API");
+        config.setVersion("1.0.0");
+        config.setResourcePackage(InventoryItemResource.class.getPackage().getName());
+        config.setScan(true);
+
+        FilterRegistration.Dynamic filter = environment.servlets().addFilter("CORSFilter", CrossOriginFilter.class);
+        filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, environment.getApplicationContext().getContextPath() + "swagger.json");
+        filter.setInitParameter(ALLOWED_METHODS_PARAM, "GET,OPTIONS");
+        filter.setInitParameter(ALLOWED_HEADERS_PARAM, "Origin, Content-Type, Accept");
+        filter.setInitParameter(ALLOWED_ORIGINS_PARAM, "*");
+        filter.setInitParameter(ALLOW_CREDENTIALS_PARAM, "true");
     }
 
     private static void configureObjectMapper(Environment environment) {
@@ -46,5 +73,6 @@ public class InventoryItemApi extends Application<InventoryItemApiConfiguration>
         module.addSerializer(ID.class, new IDSerializer());
         mapper.registerModule(module);
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 }

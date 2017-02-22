@@ -1,13 +1,16 @@
 package io.plumery.inventoryitem.api.core;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
-/**
- * Created by veniamin on 18/02/2017.
- */
+@ApiModel
 public class InventoryItemListItem implements Serializable {
+    @ApiModelProperty("The id of the inventory item")
     public String id;
+    @ApiModelProperty("The name of the inventory item")
     public String name;
+    @ApiModelProperty("The current version of the inventory item")
     public int version;
-    public boolean active = true;
 }

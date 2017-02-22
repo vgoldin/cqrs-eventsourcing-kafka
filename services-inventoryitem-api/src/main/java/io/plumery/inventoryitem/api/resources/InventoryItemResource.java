@@ -9,6 +9,10 @@ import io.plumery.inventoryitem.api.stream.StreamBroadcaster;
 import io.plumery.inventoryitem.core.commands.CreateInventoryItem;
 import io.plumery.inventoryitem.core.commands.DeactivateInventoryItem;
 import io.plumery.inventoryitem.core.commands.RenameInventoryItem;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.glassfish.jersey.media.sse.EventOutput;
 import org.glassfish.jersey.media.sse.OutboundEvent;
 import org.glassfish.jersey.media.sse.SseBroadcaster;
@@ -20,6 +24,7 @@ import javax.ws.rs.core.Response;
 import java.util.Observable;
 import java.util.Observer;
 
+@Api(value = "inventory-items", description = "Endpoint for inventory items management")
 @Path("/inventory-items")
 @Produces(MediaType.APPLICATION_JSON)
 public class InventoryItemResource implements Observer {
@@ -33,11 +38,15 @@ public class InventoryItemResource implements Observer {
     }
 
     @GET
+    @ApiOperation(value = "Returns inventory items", notes = "Returns a complete list of inventory items.",
+            response = InventoryItemListItem.class,
+            responseContainer = "List")
     public Iterable<InventoryItemListItem> inventoryItems() {
         return query.getInventoryItems();
     }
 
     @POST
+    @ApiOperation(value = "Create new inventory item", notes = "Create a new inventory item")
     public Response create(InventoryItem inventoryItem) {
         CreateInventoryItem command = new CreateInventoryItem()
             .withInventoryItemId(inventoryItem.inventoryItemId)
@@ -50,6 +59,7 @@ public class InventoryItemResource implements Observer {
 
     @PUT
     @Path("/{id}")
+    @ApiOperation(value = "Rename inventory item", notes = "Assign a new name to the inventory item")
     public Response rename(@PathParam("id") String id, InventoryItem inventoryItem) {
         RenameInventoryItem command = new RenameInventoryItem()
                 .withInventoryItemId(id)
@@ -64,6 +74,7 @@ public class InventoryItemResource implements Observer {
 
     @POST
     @Path("/{id}/deactivate")
+    @ApiOperation(value = "Deactivate inventory item", notes = "Deactivate the inventory item so that it would not appear in the list again")
     public Response deactivate(@PathParam("id") String id, InventoryItem inventoryItem) {
         DeactivateInventoryItem command = new DeactivateInventoryItem()
                 .withInventoryItemId(id);
@@ -77,6 +88,7 @@ public class InventoryItemResource implements Observer {
     @GET
     @Path("/events.stream")
     @Produces(SseFeature.SERVER_SENT_EVENTS)
+    @ApiOperation(value = "Get Event Stream of Application Events", notes = "Returns a continuous stream of application events using Server-Sent Events.")
     public EventOutput errors() {
         final EventOutput eventOutput = new EventOutput();
         BROADCASTER.add(eventOutput);

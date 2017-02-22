@@ -46,6 +46,16 @@ GET     /inventory-items/events.stream (io.plumery.inventoryitem.api.resources.I
 PUT     /inventory-items/{id} (io.plumery.inventoryitem.api.resources.InventoryItemResource)
 POST    /inventory-items/{id}/deactivate (io.plumery.inventoryitem.api.resources.InventoryItemResource)
 ```    
+# Swagger API
+- Download swagger ui from https://github.com/swagger-api/swagger-ui
+- Extract the zip
+- Change to `dist` folder
+- Open `index.html`
+- Point to:
+```
+http://localhost:9901/swagger.json
+```
+
 # Replaying Projection
 - Download and unzip Kafka
 - Change to KAFKA_HOME
@@ -61,5 +71,5 @@ POST    /inventory-items/{id}/deactivate (io.plumery.inventoryitem.api.resources
 # TODO
 * Get rid of ID.class 
 * ~~Generate all the events and commands from JSON schema~~
-* Add swagger documentation for API part
+* ~~Add swagger documentation for API part~~
 * Implement UI Micro-Service

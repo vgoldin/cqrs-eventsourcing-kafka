@@ -1,0 +1,12 @@
+{
+  "type":"object",
+  "extendsJavaClass" : "io.plumery.core.Command",
+  "properties": {
+    "inventoryItemId": {
+      "type": "string"
+    },
+    "newName": {
+      "type": "string"
+    }
+  }
+}

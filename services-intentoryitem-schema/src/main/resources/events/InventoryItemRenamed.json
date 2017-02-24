@@ -1,0 +1,12 @@
+{
+  "type":"object",
+  "extendsJavaClass" : "io.plumery.core.Event",
+  "properties": {
+    "inventoryItemId": {
+      "type": "string"
+    },
+    "newName": {
+      "type": "string"
+    }
+  }
+}

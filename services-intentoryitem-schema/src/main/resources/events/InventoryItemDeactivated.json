@@ -1,0 +1,5 @@
+{
+  "type":"object",
+  "extendsJavaClass" : "io.plumery.core.Event",
+  "additionalProperties" : {}
+}

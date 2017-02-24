@@ -1,4 +1,4 @@
-package io.plumery;
+package io.plumery.inventoryitem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

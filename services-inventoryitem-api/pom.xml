@@ -12,6 +12,10 @@
 
     <artifactId>services-inventoryitem-api</artifactId>
 
+    <properties>
+        <mainClass>io.plumery.inventoryitem.api.InventoryItemApi</mainClass>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.dropwizard</groupId>

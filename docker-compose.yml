@@ -1,0 +1,15 @@
+kafka:
+  image: spotify/kafka:latest
+  ports:
+    - 2181:2181
+    - 9092:9092
+  environment:
+    - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
+    - ADVERTISED_PORT=9092
+
+mysql:
+  image: plumery/eventstore-mysql:latest
+  ports:
+    - 3306:3306
+  environment:
+    - EVENTSTORE_PASSWORD=PVdiZs8RJWFwJ/muAZbQxP&f

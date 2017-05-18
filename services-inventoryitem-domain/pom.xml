@@ -95,7 +95,6 @@
                 <configuration>
                     <sourceDirectory>${project.build.directory}/schema</sourceDirectory>
                     <targetPackage>io.plumery.inventoryitem.core</targetPackage>
-                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
                     <generateBuilders>true</generateBuilders>
                 </configuration>
                 <executions>

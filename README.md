@@ -34,10 +34,17 @@ cd services-inventoryitem-api/target
 java -jar services-inventoryitem-api-1.0-SNAPSHOT.jar server application.yml
 ```
 ## Domain Micro-Service
+with local jdbm database
 ```
 cd services-inventoryitem-domain/target
 java -jar services-inventoryitem-domain-1.0-SNAPSHOT.jar server application.yml
 ```
+with MySQL running on 127.0.0.1:3306 (see docker-compose.yml)
+```
+cd services-inventoryitem-domain/target
+java -jar services-inventoryitem-domain-1.0-SNAPSHOT.jar server application-jdbc.yml
+```
+
 # Exposed APIs
 ```
 GET     /inventory-items (io.plumery.inventoryitem.api.resources.InventoryItemResource)

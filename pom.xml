@@ -29,7 +29,6 @@
         <module>services-inventoryitem-domain</module>
         <module>services-parent</module>
         <module>services-intentoryitem-schema</module>
-        <module>services-inventoryitem-ui</module>
         <module>services-infrastructure-eventstore-jdbc</module>
         <module>services-infrastructure-eventstore-local</module>
         <module>services-infrastructure-eventstore-kafka</module>

@@ -1,4 +1,4 @@
-package io.plumery.eventstore.local;
+package io.plumery.eventstore.persistent.local;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LocalEventStore implements EventStore {
     private static Logger LOG = LoggerFactory.getLogger(LocalEventStore.class);

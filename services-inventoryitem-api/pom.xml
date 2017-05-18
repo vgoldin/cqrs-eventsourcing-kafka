@@ -102,7 +102,7 @@
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-                <version>0.4.30</version>
+                <version>0.4.30</version>io.plumery.inventoryitem
                 <configuration>
                     <sourceDirectory>${project.build.directory}/schema</sourceDirectory>
                     <targetPackage>io.plumery.inventoryitem.core</targetPackage>

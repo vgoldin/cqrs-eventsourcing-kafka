@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.setup.Environment;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
+import io.plumery.eventstore.persistent.jdbc.JdbcEventStore;
 import io.plumery.eventstore.kafka.KafkaEventStore;
-import io.plumery.eventstore.local.LocalEventStore;
-import org.hibernate.validator.constraints.NotEmpty;
+import io.plumery.eventstore.persistent.local.LocalEventStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +17,7 @@ public class EventStoreFactory {
     private static Logger LOG = LoggerFactory.getLogger(EventStoreFactory.class);
     private static final String KAFKA = "kafka";
     private static final String LOCAL = "local";
+    private static final String JDBC = "jdbc";
 
     private String bootstrap;
 
@@ -49,6 +50,8 @@ public class EventStoreFactory {
                     .withObjectMapper(enviroment.getObjectMapper())
                     .withEventsPackage(eventsPackage)
                     .build();
+        } else if (type.equals(JDBC)) {
+            eventStore = new JdbcEventStore(publisher);
         } else {
             eventStore = new LocalEventStore(publisher);
         }

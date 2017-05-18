@@ -2,20 +2,23 @@ package io.plumery.eventstore;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.db.ManagedDataSource;
 import io.dropwizard.jdbi.DBIFactory;
+import io.dropwizard.migrations.CloseableLiquibase;
+import io.dropwizard.migrations.CloseableLiquibaseWithClassPathMigrationsFile;
 import io.dropwizard.setup.Environment;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.jdbc.JdbcEventStore;
 import io.plumery.eventstore.kafka.KafkaEventStore;
 import io.plumery.eventstore.local.LocalEventStore;
+import liquibase.exception.LiquibaseException;
 import org.skife.jdbi.v2.DBI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Created by veniamin on 10/02/2017.
- */
+import java.sql.SQLException;
+
 public class EventStoreFactory {
     private static Logger LOG = LoggerFactory.getLogger(EventStoreFactory.class);
     private static final String KAFKA = "kafka";
@@ -70,9 +73,34 @@ public class EventStoreFactory {
     }
 
     private EventStore buildJdbcEventStore(Environment environment) {
-        EventStore eventStore;DBIFactory factory = new DBIFactory();
-        DBI jdbi = factory.build(environment, database, "eventstore");
-        eventStore = new JdbcEventStore(jdbi, environment.getObjectMapper());
+        ManagedDataSource ds = database.build(environment.metrics(), "eventstore");
+        DBI jdbi = new DBIFactory().build(environment, database, "eventstore");
+        updateDatabaseSchema(ds);
+        EventStore eventStore = new JdbcEventStore(jdbi, environment.getObjectMapper());
         return eventStore;
+    }
+
+    private void updateDatabaseSchema(ManagedDataSource ds) {
+        try {
+            try {
+                CloseableLiquibase lq = new CloseableLiquibaseWithClassPathMigrationsFile(ds, "migrations.xml");
+                lq.update("");
+                lq.close();
+            } finally {
+                if (ds != null) {
+                    ds.stop();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Can not execute db migrations.", e);
+        } catch (LiquibaseException e) {
+            throw new RuntimeException("Can not execute db migrations.", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Can not execute db migrations.", e);
+        }
+    }
+
+    public DataSourceFactory getDataSourceFactory() {
+        return database;
     }
 }

@@ -37,6 +37,13 @@
             <artifactId>services-infrastructure-eventstore</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -88,7 +95,7 @@
                 <configuration>
                     <sourceDirectory>${project.build.directory}/schema</sourceDirectory>
                     <targetPackage>io.plumery.inventoryitem.core</targetPackage>
-                    <targetDirectory>${project.build.directory}/classes</targetDirectory>
+                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
                     <generateBuilders>true</generateBuilders>
                 </configuration>
                 <executions>

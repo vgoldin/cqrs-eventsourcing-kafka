@@ -13,8 +13,8 @@ public interface EventStreams {
     @SqlQuery("select version from streams where id = :streamId")
     Integer getCurrentStreamVersion(@Bind("streamId") String streamId);
 
-    @SqlUpdate("insert into streams (id, name) values (:streamId, :name)")
-    int createNewStream(@Bind("name") String name, @Bind("streamId") String streamId);
+    @SqlUpdate("insert into streams (id, type) values (:streamId, :type)")
+    int createNewStream(@Bind("type") String type, @Bind("streamId") String streamId);
 
 
     @SqlUpdate("insert into events (event_id, data, type, version, stream_id) values (:eventId, :data, :type, :version, :streamId)")

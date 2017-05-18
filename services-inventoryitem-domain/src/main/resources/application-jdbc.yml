@@ -1,0 +1,25 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 9902
+  adminConnectors:
+    - type: http
+      port: 9802
+
+eventStore:
+  type: jdbc
+  database:
+    driverClass: org.mariadb.jdbc.Driver
+    user: eventstore
+    password: PVdiZs8RJWFwJ/muAZbQxP&f
+    url: jdbc:mariadb://localhost:3306/eventstore
+    maxWaitForConnection: 1s
+    validationQuery: "SELECT 1"
+    minSize: 2
+    maxSize: 8
+    checkConnectionWhileIdle: true
+    evictionInterval: 10s
+    minIdleTime: 1 minute
+
+kafka:
+  bootstrap: 127.0.0.1:9092

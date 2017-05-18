@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="eventstore" id="1">
+        <createTable catalogName="eventstore" tableName="events">
+            <column name="stream_id" type="VARCHAR(36)"/>
+            <column name="event_id" type="VARCHAR(36)"/>
+            <column name="data" type="BLOB"/>
+            <column name="type" type="VARCHAR(100)"/>
+            <column name="version" type="INTEGER"/>
+        </createTable>
+        <addUniqueConstraint constraintName="UNIQUE_VERSION" tableName="events" columnNames="version, stream_id"/>
+        <addUniqueConstraint constraintName="UNIQUE_EVENT_ID" tableName="events" columnNames="event_id"/>
+    </changeSet>
+
+    <changeSet author="eventstore" id="2">
+        <createTable catalogName="eventstore" tableName="streams">
+            <column name="id" type="VARCHAR(36)"/>
+            <column name="type" type="VARCHAR(100)"/>
+            <column name="version" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

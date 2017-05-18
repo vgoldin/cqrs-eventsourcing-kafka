@@ -106,7 +106,7 @@
                 <configuration>
                     <sourceDirectory>${project.build.directory}/schema</sourceDirectory>
                     <targetPackage>io.plumery.inventoryitem.core</targetPackage>
-                    <targetDirectory>${project.build.directory}/classes</targetDirectory>
+                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
                     <generateBuilders>true</generateBuilders>
                 </configuration>
                 <executions>

@@ -1,4 +1,4 @@
-# CQRS and Event Sourcing Implementation with Kafka
+# CQRS and Event Sourcing Implementation with Kafka and MySQL (JBDC)
 
 # Introduction
 The aim of this small project is to illustrate the possibility of applying CQRS, Domain-Driven Design and Event Sourcing in a simple way, enabling Reactive architecture and leveraging Kafka as a distributed message broker

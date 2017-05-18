@@ -45,12 +45,35 @@
                 <artifactId>services-infrastructure-eventstore</artifactId>
                 <version>${plumery.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.plumery</groupId>
+                <artifactId>services-infrastructure-eventstore-local</artifactId>
+                <version>${plumery.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.plumery</groupId>
+                <artifactId>services-infrastructure-eventstore-jdbc</artifactId>
+                <version>${plumery.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.plumery</groupId>
+                <artifactId>services-infrastructure-eventstore-kafka</artifactId>
+                <version>${plumery.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>io.dropwizard</groupId>
                 <artifactId>dropwizard-core</artifactId>
                 <version>${dropwizard.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-jdbi</artifactId>
+                <version>${dropwizard.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>

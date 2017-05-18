@@ -1,4 +1,4 @@
-package io.plumery.eventstore.persistent.local;
+package io.plumery.eventstore.local;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -7,7 +7,6 @@ import io.plumery.core.AggregateRoot;
 import io.plumery.core.Event;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
-import io.plumery.eventstore.EventDescriptor;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import org.slf4j.Logger;

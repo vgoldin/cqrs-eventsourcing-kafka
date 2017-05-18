@@ -1,4 +1,4 @@
-package io.plumery.eventstore;
+package io.plumery.eventstore.local;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

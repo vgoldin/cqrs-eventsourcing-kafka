@@ -2,6 +2,7 @@ package io.plumery.eventstore.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 import com.google.common.reflect.ClassPath;
 import io.plumery.core.*;
 import io.plumery.core.infrastructure.EventStore;
@@ -21,8 +22,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This Event Store only shows the possible way of implementing an Event Store using Kafka topics,
@@ -177,10 +176,10 @@ public class KafkaEventStore implements EventStore {
         }
 
         public KafkaEventStore build() {
-            checkNotNull(zookeeper);
-            checkNotNull(groupId);
-            checkNotNull(objectMapper);
-            checkNotNull(eventsPackage);
+            Preconditions.checkNotNull(zookeeper);
+            Preconditions.checkNotNull(groupId);
+            Preconditions.checkNotNull(objectMapper);
+            Preconditions.checkNotNull(eventsPackage);
 
             return new KafkaEventStore(zookeeper, groupId, objectMapper, eventsPackage);
         }

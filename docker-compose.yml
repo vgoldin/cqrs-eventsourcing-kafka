@@ -1,15 +1,40 @@
-kafka:
-  image: spotify/kafka:latest
+zookeeper:
+  image: debezium/zookeeper:latest
   ports:
     - 2181:2181
+    - 2888:2888
+    - 3888:3888
+
+kafka:
+  image: debezium/kafka:latest
+  ports:
     - 9092:9092
   environment:
-    - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
-    - ADVERTISED_PORT=9092
+    - ADVERTISED_HOST_NAME=127.0.0.1
+  links:
+    - zookeeper:zookeeper
 
 mysql:
   image: plumery/eventstore-mysql:latest
   ports:
     - 3306:3306
   environment:
-    - EVENTSTORE_PASSWORD=PVdiZs8RJWFwJ/muAZbQxP&f
+    - MYSQL_ROOT_HOST=%
+    - MYSQL_ALLOW_EMPTY_PASSWORD=YES
+    - MYSQL_DATABASE=eventstore
+    - MYSQL_USER=eventstore
+    - MYSQL_PASSWORD=PVdiZs8RJWFwJ
+
+
+connect:
+  image: debezium/connect:latest
+  ports:
+    - 8083:8083
+  environment:
+    - GROUP_ID=1
+    - CONFIG_STORAGE_TOPIC=my_connect_configs
+    - OFFSET_STORAGE_TOPIC=my_connect_offsets
+  links:
+    - zookeeper:zookeeper
+    - kafka:kafka
+    - mysql:mysql

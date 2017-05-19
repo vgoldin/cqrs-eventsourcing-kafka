@@ -11,7 +11,7 @@ eventStore:
   database:
     driverClass: org.mariadb.jdbc.Driver
     user: eventstore
-    password: PVdiZs8RJWFwJ/muAZbQxP&f
+    password: PVdiZs8RJWFwJ
     url: jdbc:mariadb://localhost:3306/eventstore
     maxWaitForConnection: 1s
     validationQuery: "SELECT 1"

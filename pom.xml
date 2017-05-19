@@ -31,6 +31,7 @@
         <module>services-intentoryitem-schema</module>
         <module>services-infrastructure-eventstore-jdbc</module>
         <module>services-infrastructure-eventstore-local</module>
+        <module>services-infrastructure-eventstore-cdc</module>
     </modules>
 
     <build>

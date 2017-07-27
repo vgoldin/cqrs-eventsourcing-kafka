@@ -32,9 +32,9 @@ public class KafkaEventPublisher implements EventPublisher {
         LOG.debug("Publishing event ["+event.getClass().getSimpleName()+"] for [" + streamName + "]");
 
         String topic = streamName;
-        String key = event.getClass().getSimpleName();
+        String eventType = event.getClass().getSimpleName();
 
-        EventEnvelope envelope = new EventEnvelope(key, event);
+        EventEnvelope envelope = new EventEnvelope(eventType, event);
         String value = serializeEnvelope(envelope);
 
         // -- the key of the record is an aggregate Id to ensure the order of the events for the same aggregate

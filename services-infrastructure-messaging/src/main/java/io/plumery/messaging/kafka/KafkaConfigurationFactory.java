@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * Created by veniamin on 21/02/2017.
+ * Created by ben.goldin on 21/02/2017.
  */
 public class KafkaConfigurationFactory {
     @NotEmpty

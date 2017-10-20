@@ -5,7 +5,7 @@ import com.hazelcast.core.HazelcastInstance;
 import io.plumery.inventoryitem.api.denormalizer.KafkaDenormalizer;
 
 /**
- * Created by veniamin on 19/02/2017.
+ * Created by ben.goldin on 19/02/2017.
  */
 public class TestDenormalizer {
     public static void main(String[] args) {

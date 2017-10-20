@@ -21,7 +21,7 @@ import org.apache.kafka.streams.kstream.Predicate;
 import java.util.Properties;
 
 /**
- * Created by veniamin on 13/02/2017.
+ * Created by ben.goldin on 13/02/2017.
  */
 public class KafkaDenormalizer implements Managed {
     private static final String INVENTORY_ITEM_TOPIC = "InventoryItem";

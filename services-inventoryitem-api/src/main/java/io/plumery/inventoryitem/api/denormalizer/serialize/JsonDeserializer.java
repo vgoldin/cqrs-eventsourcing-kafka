@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Created by veniamin on 18/02/2017.
+ * Created by ben.goldin on 18/02/2017.
  */
 public class JsonDeserializer<T> implements Deserializer<T> {
     private final ObjectMapper mapper;

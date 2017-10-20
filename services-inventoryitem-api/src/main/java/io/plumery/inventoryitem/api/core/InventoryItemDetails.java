@@ -1,7 +1,7 @@
 package io.plumery.inventoryitem.api.core;
 
 /**
- * Created by veniamin on 18/02/2017.
+ * Created by ben.goldin on 18/02/2017.
  */
 public class InventoryItemDetails {
     public final String id;

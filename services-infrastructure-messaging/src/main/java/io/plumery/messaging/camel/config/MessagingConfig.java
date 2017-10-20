@@ -4,7 +4,7 @@ import io.plumery.core.Command;
 import io.plumery.core.Event;
 
 /**
- * Created by veniamin on 30/01/2017.
+ * Created by ben.goldin on 30/01/2017.
  */
 public class MessagingConfig {
     public static String destinationNameForStreamEventPublishing(String streamName) {

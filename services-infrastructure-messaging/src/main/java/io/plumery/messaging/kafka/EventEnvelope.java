@@ -5,7 +5,7 @@ import io.plumery.core.Event;
 import java.time.LocalDateTime;
 
 /**
- * Created by veniamin on 13/02/2017.
+ * Created by ben.goldin on 13/02/2017.
  */
 public class EventEnvelope {
     public final String eventType;

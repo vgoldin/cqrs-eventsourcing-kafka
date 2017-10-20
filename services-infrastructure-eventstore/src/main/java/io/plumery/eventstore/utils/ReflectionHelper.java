@@ -9,7 +9,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
 /**
- * Created by veniamin on 30/01/2017.
+ * Created by ben.goldin on 30/01/2017.
  */
 public class ReflectionHelper {
     public static Class<? extends AggregateRoot> getParameterizedClass(Class clazz) {

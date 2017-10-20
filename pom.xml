@@ -22,13 +22,13 @@
     </properties>
 
     <modules>
+        <module>services-parent</module>
         <module>services-core</module>
+        <module>services-intentoryitem-schema</module>
         <module>services-infrastructure-messaging</module>
         <module>services-infrastructure-eventstore</module>
         <module>services-inventoryitem-api</module>
         <module>services-inventoryitem-domain</module>
-        <module>services-parent</module>
-        <module>services-intentoryitem-schema</module>
         <module>services-infrastructure-eventstore-jdbc</module>
         <module>services-infrastructure-eventstore-local</module>
         <module>services-infrastructure-eventstore-cdc</module>

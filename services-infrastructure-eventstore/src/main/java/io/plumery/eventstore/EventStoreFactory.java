@@ -10,7 +10,6 @@ import io.dropwizard.setup.Environment;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.jdbc.JdbcEventStore;
-import io.plumery.eventstore.kafka.KafkaEventStore;
 import io.plumery.eventstore.local.LocalEventStore;
 import liquibase.exception.LiquibaseException;
 import org.skife.jdbi.v2.DBI;
@@ -21,7 +20,6 @@ import java.sql.SQLException;
 
 public class EventStoreFactory {
     private static Logger LOG = LoggerFactory.getLogger(EventStoreFactory.class);
-    private static final String KAFKA = "kafka";
     private static final String LOCAL = "local";
     private static final String JDBC = "jdbc";
 
@@ -52,14 +50,7 @@ public class EventStoreFactory {
     public EventStore build(Environment environment, EventPublisher publisher, String eventsPackage) {
         EventStore eventStore;
 
-        if (type.equals(KAFKA)) {
-            eventStore = new KafkaEventStore.Builder()
-                    .withZookeeper(bootstrap)
-                    .withGroupId(environment.getName())
-                    .withObjectMapper(environment.getObjectMapper())
-                    .withEventsPackage(eventsPackage)
-                    .build();
-        } else if (type.equals(JDBC)) {
+        if (type.equals(JDBC)) {
             eventStore = buildJdbcEventStore(environment);
         } else {
             eventStore = new LocalEventStore(publisher);

@@ -32,10 +32,5 @@
             <groupId>io.plumery</groupId>
             <artifactId>services-infrastructure-eventstore-jdbc</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>io.plumery</groupId>
-            <artifactId>services-infrastructure-eventstore-kafka</artifactId>
-        </dependency>
     </dependencies>
 </project>

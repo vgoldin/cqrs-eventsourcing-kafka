@@ -3,6 +3,7 @@ package io.plumery.eventstore.jdbc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.plumery.core.AggregateRoot;
 import io.plumery.core.Event;
+import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.jdbc.dbi.EventStreams;
 import org.skife.jdbi.v2.DBI;
@@ -18,10 +19,12 @@ public class JdbcEventStore implements EventStore {
     private static Logger LOG = LoggerFactory.getLogger(JdbcEventStore.class);
     private DBI dbi;
     private ObjectMapper objectMapper;
+    private final EventPublisher eventPublisher;
 
-    public JdbcEventStore(DBI dbi, ObjectMapper objectMapper) {
+    public JdbcEventStore(DBI dbi, ObjectMapper objectMapper, EventPublisher eventPublisher) {
         this.dbi = dbi;
         this.objectMapper = objectMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -49,6 +52,9 @@ public class JdbcEventStore implements EventStore {
                             serializeEvent(event),
                             typeOf(event),
                             event.version);
+
+                    //TODO: to be replaced with CDC
+                    eventPublisher.publish(streamName, event);
                 }
 
                 LOG.debug("Setting new current version [{}] for aggregate [{}] with Id [{}]", version, streamName, aggregateId);

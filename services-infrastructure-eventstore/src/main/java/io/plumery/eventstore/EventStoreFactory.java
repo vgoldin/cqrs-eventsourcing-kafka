@@ -51,7 +51,7 @@ public class EventStoreFactory {
         EventStore eventStore;
 
         if (type.equals(JDBC)) {
-            eventStore = buildJdbcEventStore(environment);
+            eventStore = buildJdbcEventStore(publisher, environment);
         } else {
             eventStore = new LocalEventStore(publisher);
         }
@@ -63,11 +63,11 @@ public class EventStoreFactory {
         return eventStore;
     }
 
-    private EventStore buildJdbcEventStore(Environment environment) {
+    private EventStore buildJdbcEventStore(EventPublisher publisher, Environment environment) {
         ManagedDataSource ds = database.build(environment.metrics(), "eventstore");
         DBI jdbi = new DBIFactory().build(environment, database, "eventstore");
         updateDatabaseSchema(ds);
-        EventStore eventStore = new JdbcEventStore(jdbi, environment.getObjectMapper());
+        EventStore eventStore = new JdbcEventStore(jdbi, environment.getObjectMapper(), publisher);
         return eventStore;
     }
 

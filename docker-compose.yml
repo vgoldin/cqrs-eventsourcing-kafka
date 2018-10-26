@@ -1,40 +1,60 @@
-zookeeper:
-  image: debezium/zookeeper:latest
-  ports:
-    - 2181:2181
-    - 2888:2888
-    - 3888:3888
+version: '3'
+services:
+  zoo:
+    image: zookeeper:latest
+    hostname: zoo
+    ports:
+      - "2181:2181"
+    environment:
+        ZOO_MY_ID: 1
+        ZOO_PORT: 2181
+        ZOO_SERVERS: server.1=zoo:2888:3888
+    volumes:
+      - ./zk-single-kafka-single/zoo/data:/data
+      - ./zk-single-kafka-single/zoo/datalog:/datalog
 
-kafka:
-  image: debezium/kafka:latest
-  ports:
-    - 9092:9092
-  environment:
-    - ADVERTISED_HOST_NAME=127.0.0.1
-  links:
-    - zookeeper:zookeeper
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./zk-single-kafka-single/kafka/data:/var/lib/kafka/data
+    depends_on:
+      - zoo
 
-mysql:
-  image: plumery/eventstore-mysql:latest
-  ports:
-    - 3306:3306
-  environment:
-    - MYSQL_ROOT_HOST=%
-    - MYSQL_ALLOW_EMPTY_PASSWORD=YES
-    - MYSQL_DATABASE=eventstore
-    - MYSQL_USER=eventstore
-    - MYSQL_PASSWORD=PVdiZs8RJWFwJ
+  eventstore:
+    image: plumery/eventstore-mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ALLOW_EMPTY_PASSWORD=YES
+      - MYSQL_DATABASE=eventstore
+      - MYSQL_USER=eventstore
+      - MYSQL_PASSWORD=PVdiZs8RJWFwJ
+
+  inventoryapi:
+    build: ./services-inventoryitem-api
+    image: services-inventoryitem-api:latest
+    ports:
+      - 9901:9901
+    links:
+      - kafka
 
 
-connect:
-  image: debezium/connect:latest
-  ports:
-    - 8083:8083
-  environment:
-    - GROUP_ID=1
-    - CONFIG_STORAGE_TOPIC=my_connect_configs
-    - OFFSET_STORAGE_TOPIC=my_connect_offsets
-  links:
-    - zookeeper:zookeeper
-    - kafka:kafka
-    - mysql:mysql
+  inventorydomain:
+    build: ./services-inventoryitem-domain
+    image: services-inventoryitem-domain:latest
+    links:
+      - eventstore
+      - kafka
+

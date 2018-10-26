@@ -9,4 +9,4 @@ server:
     enabled: false
 
 kafka:
-  bootstrap: 127.0.0.1:9092
+  bootstrap: kafka:9092

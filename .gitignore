@@ -1,4 +1,5 @@
 .idea/
 *.iml
 target/
+zk-single-kafka-single/
 dependency-reduced-pom.xml

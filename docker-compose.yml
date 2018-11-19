@@ -47,6 +47,7 @@ services:
     image: services-inventoryitem-api:latest
     ports:
       - 9901:9901
+      - 9801:9801
     links:
       - kafka
 

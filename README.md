@@ -31,7 +31,7 @@ Module | Purpose
 ## API Micro-Service
 ```
 cd services-inventoryitem-api/target
-java -jar services-inventoryitem-api-1.0-SNAPSHOT.jar server classes/application.yml
+java -jar services-inventoryitem-api-1.0-SNAPSHOT.jar server classes/application-local.yml
 ```
 ## Domain Micro-Service
 with local jdbm database

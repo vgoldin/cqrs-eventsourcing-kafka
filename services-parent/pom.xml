@@ -15,7 +15,6 @@
     <properties>
         <plumery.version>1.0-SNAPSHOT</plumery.version>
         <dropwizard.version>1.3.8</dropwizard.version>
-        <camel.version>2.18.2</camel.version>
         <guava.version>21.0</guava.version>
         <jackson.version>2.9.8</jackson.version>
         <kafka.version>0.10.1.0</kafka.version>
@@ -87,11 +86,6 @@
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
                 <version>${kafka.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-core</artifactId>
-                <version>${camel.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>

@@ -6,7 +6,7 @@
         </encoder>
     </appender>
 
-    <logger name="io.plumery" level="DEBUG"/>
+    <logger name="io.plumery.messaging.kafka" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="console" />

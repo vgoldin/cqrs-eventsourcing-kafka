@@ -1,6 +1,7 @@
 package io.plumery.inventoryitem.api.denormalizer.serialize;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.plumery.inventoryitem.api.core.EventEnvelope;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.io.IOException;
@@ -13,10 +14,10 @@ public class JsonDeserializer<T> implements Deserializer<T> {
     private final ObjectMapper mapper;
     private final Class<T> clazz;
 
-    public JsonDeserializer(Class<T> eventEnvelopeClass) {
+    public JsonDeserializer() {
         this.mapper = new ObjectMapper();
         this.mapper.findAndRegisterModules();
-        this.clazz = eventEnvelopeClass;
+        this.clazz = (Class<T>) EventEnvelope.class;
     }
 
     @Override

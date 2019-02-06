@@ -17,6 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -41,6 +44,11 @@ public class KafkaCommandListener implements CommandListener, Managed {
         resolver = ActionHandlerResolver.getCurrent();
 
         Properties props = new Properties();
+        try {
+            props.put("client.id", InetAddress.getLocalHost().getHostName());
+        } catch (UnknownHostException e) {
+            throw new RuntimeException();
+        }
         props.put("bootstrap.servers", zookeeper);
         props.put("group.id", groupId);
         props.put("key.deserializer", StringDeserializer.class);
@@ -68,7 +76,7 @@ public class KafkaCommandListener implements CommandListener, Managed {
                 LOG.info("Subscribed for [" + actionTopics + "]");
 
                 while (!closed.get()) {
-                    ConsumerRecords<String, String> records = consumer.poll(10000);
+                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
                     for (ConsumerRecord<String, String> record : records) {
                         LOG.debug("Received record [" + record + "] from [" + record.topic() + "]");
                         String action = record.topic().replace(Constants.COMMAND_TOPIC_PREFIX, "");

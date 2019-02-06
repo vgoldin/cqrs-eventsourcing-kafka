@@ -3,3 +3,4 @@
 target/
 zk-single-kafka-single/
 dependency-reduced-pom.xml
+.DS_Store

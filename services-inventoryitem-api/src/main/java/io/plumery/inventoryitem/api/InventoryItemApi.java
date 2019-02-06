@@ -41,7 +41,7 @@ public class InventoryItemApi extends Application<InventoryItemApiConfiguration>
 
         InventoryItemResource resource = new InventoryItemResource(new InventoryItemsQuery(), commandDispatcher);
         environment.jersey().register(resource);
-        environment.lifecycle().manage(new KafkaDenormalizer());
+        environment.lifecycle().manage(new KafkaDenormalizer(configuration));
         environment.lifecycle().manage(new HazelcastManaged());
 
         StreamBroadcaster broadcaster = configuration.getStreamBroadcasterFactory().build(environment);

@@ -25,15 +25,22 @@ Module | Purpose
 `mvn clean install`
 
 # Running Services
-## Kafka
+## Docker Compose
+```
+docker-compose build
+docker-compose up -d
+```
+
+## Standalone
+### Kafka
 `docker run -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=127.0.0.1 --env ADVERTISED_PORT=9092 spotify/kafka`
 
-## API Micro-Service
+### API Micro-Service
 ```
 cd services-inventoryitem-api/target
 java -jar services-inventoryitem-api-1.0-SNAPSHOT.jar server classes/application-local.yml
 ```
-## Domain Micro-Service
+### Domain Micro-Service
 with local jdbm database
 ```
 cd services-inventoryitem-domain/target

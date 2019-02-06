@@ -1,10 +1,12 @@
 package io.plumery.eventstore.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.plumery.core.AggregateRoot;
 import io.plumery.core.Event;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
+import io.plumery.eventstore.jdbc.dbi.EventMapper;
 import io.plumery.eventstore.jdbc.dbi.EventStreams;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
@@ -65,6 +67,8 @@ public class JdbcEventStore implements EventStore {
 
     @Override
     public Iterable<? extends Event> getEventsForAggregate(Class<? extends AggregateRoot> aggregate, String aggregateId) {
+        dbi.registerMapper(new EventMapper(objectMapper));
+
         return dbi.withHandle(handle -> {
             EventStreams streams = handle.attach(EventStreams.class);
             return streams.loadEvents(aggregateId);
@@ -72,7 +76,7 @@ public class JdbcEventStore implements EventStore {
     }
 
     private static String typeOf(Event event) {
-        return event.getClass().getSimpleName();
+        return TypeFactory.defaultInstance().constructType(event.getClass()).toCanonical();
     }
 
     private byte[] serializeEvent(Event event) {

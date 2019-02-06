@@ -10,6 +10,9 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Properties;
@@ -25,6 +28,11 @@ public class KafkaTopicBroadcaster extends StreamBroadcaster {
     public KafkaTopicBroadcaster(String name, ObjectMapper objectMapper, String zookeeper) {
         super();
         Properties props = new Properties();
+        try {
+            props.put("client.id", InetAddress.getLocalHost().getHostName());
+        } catch (UnknownHostException e) {
+            throw new RuntimeException();
+        }
         props.put("bootstrap.servers", zookeeper);
         props.put("group.id", name);
         props.put("key.deserializer", StringDeserializer.class);
@@ -43,7 +51,7 @@ public class KafkaTopicBroadcaster extends StreamBroadcaster {
                 consumer.subscribe(Arrays.asList(APPLICATION_EVENT_STREAM));
 
                 while (!closed.get()) {
-                    ConsumerRecords<String, String> records = consumer.poll(1000);
+                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
                     for (ConsumerRecord<String, String> record : records) {
                         try {
                             EventEnvelope envelope =

@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.plumery.core.AggregateRoot;
 import io.plumery.core.Event;
+import io.plumery.core.ID;
 import io.plumery.core.infrastructure.EventPublisher;
 import io.plumery.core.infrastructure.EventStore;
 import io.plumery.eventstore.jdbc.dbi.EventMapper;
 import io.plumery.eventstore.jdbc.dbi.EventStreams;
+import io.plumery.eventstore.jdbc.exception.ConcurrencyException;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.TransactionStatus;
@@ -46,10 +48,16 @@ public class JdbcEventStore implements EventStore {
                 if (expectedVersion == -1) {
                     LOG.debug("Aggregate has unknown expected version [{}]", expectedVersion);
                     version = currentVersion == null ? 0 : currentVersion;
+                } else if (currentVersion != expectedVersion) {
+                    throw new ConcurrencyException("The expected version ["+expectedVersion+"] of the aggregate does not match the current version ["+currentVersion+"] of the aggregate",
+                            ID.fromObject(aggregateId), currentVersion);
                 }
+
+
 
                 for (Event event : events) {
                     version++;
+                    event.version = version;
                     streams.appendNewEvent(aggregateId, event.id.toString(),
                             serializeEvent(event),
                             typeOf(event),

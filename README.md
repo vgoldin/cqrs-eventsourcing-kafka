@@ -10,7 +10,7 @@ https://speakerdeck.com/vgoldin/es-and-kafka
 Module | Purpose
 --- | ---
 `services-core` | core marker interfaces shared between all other modules
-`services-infrastructure-eventstore` | event store implementation with JDBM 2.0
+`services-infrastructure-eventstore` | multiple event store implementations (JDBM 2.0 and MySQL JDBC)
 `services-infrastructure-messaging` | event publisher and command listener implementation with Kafka
 `services-intentoryitem-schema` | json-schema's of all the events and commands used in API and Domain services
 `services-inventoryitem-api` | API micro-service, exposing RESTfull API, creating Projectin with Hazelcast and dispatching commands to Kafka

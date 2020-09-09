@@ -19,7 +19,7 @@
         <jackson.version>2.10.1</jackson.version>
         <kafka.version>2.1.0</kafka.version>
         <jsr305.version>3.0.1</jsr305.version>
-        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+        <hibernate-validator.version>5.3.6.Final</hibernate-validator.version>
         <slf4j.version>1.7.21</slf4j.version>
         <jdbm.version>2.0.1</jdbm.version>
         <jersey.version>2.27</jersey.version>

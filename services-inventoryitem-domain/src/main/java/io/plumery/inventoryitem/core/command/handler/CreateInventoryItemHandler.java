@@ -7,7 +7,7 @@ import io.plumery.inventoryitem.core.commands.CreateInventoryItem;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
 
 public class CreateInventoryItemHandler implements CommandHandler<CreateInventoryItem> {
-    private Repository<InventoryItem> repository;
+    private final Repository<InventoryItem> repository;
 
     public CreateInventoryItemHandler(Repository<InventoryItem> repository) {
         this.repository = repository;

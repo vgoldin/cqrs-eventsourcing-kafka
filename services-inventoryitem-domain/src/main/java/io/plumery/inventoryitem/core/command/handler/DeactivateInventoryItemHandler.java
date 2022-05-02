@@ -7,7 +7,7 @@ import io.plumery.inventoryitem.core.commands.DeactivateInventoryItem;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
 
 public class DeactivateInventoryItemHandler implements CommandHandler<DeactivateInventoryItem> {
-    private Repository<InventoryItem> repository;
+    private final Repository<InventoryItem> repository;
 
     public DeactivateInventoryItemHandler(Repository<InventoryItem> repository) {
         this.repository = repository;

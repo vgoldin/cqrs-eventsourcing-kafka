@@ -7,7 +7,7 @@ import io.plumery.inventoryitem.core.commands.RenameInventoryItem;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
 
 public class RenameInventoryCommandHandler implements CommandHandler<RenameInventoryItem> {
-    private Repository<InventoryItem> repository;
+    private final Repository<InventoryItem> repository;
 
     public RenameInventoryCommandHandler(Repository<InventoryItem> repository) {
         this.repository = repository;

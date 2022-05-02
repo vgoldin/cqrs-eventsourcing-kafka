@@ -6,7 +6,7 @@ import io.plumery.inventoryitem.core.command.RemoveItemsFromInventory;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
 
 public class RemoveItemsFromInventoryHandler implements CommandHandler<RemoveItemsFromInventory> {
-    private Repository<InventoryItem> repository;
+    private final Repository<InventoryItem> repository;
 
     public RemoveItemsFromInventoryHandler(Repository<InventoryItem> repository) {
         this.repository = repository;

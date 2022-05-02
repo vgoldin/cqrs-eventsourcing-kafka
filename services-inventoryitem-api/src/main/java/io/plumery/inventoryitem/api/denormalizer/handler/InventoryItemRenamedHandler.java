@@ -2,13 +2,12 @@ package io.plumery.inventoryitem.api.denormalizer.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import io.plumery.core.ActionHandler;
 import io.plumery.inventoryitem.api.core.EventEnvelope;
 import io.plumery.inventoryitem.api.core.InventoryItemListItem;
 import io.plumery.inventoryitem.api.denormalizer.Constant;
 import io.plumery.inventoryitem.api.denormalizer.hazelcast.HazelcastManaged;
-import io.plumery.inventoryitem.core.events.InventoryItemCreated;
 import io.plumery.inventoryitem.core.events.InventoryItemRenamed;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 
@@ -45,8 +44,7 @@ public class InventoryItemRenamedHandler extends AbstractProcessor<String, Event
     }
 
     private InventoryItemRenamed deserializeEvent(EventEnvelope value) {
-        InventoryItemRenamed event = mapper.convertValue(value.eventData, InventoryItemRenamed.class);
-        return event;
+        return mapper.convertValue(value.eventData, InventoryItemRenamed.class);
     }
 
     private IMap<String, InventoryItemListItem> getInventoryItemsMap() {

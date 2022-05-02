@@ -2,7 +2,7 @@ package io.plumery.inventoryitem.api.denormalizer.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import io.plumery.core.ActionHandler;
 import io.plumery.inventoryitem.api.denormalizer.Constant;
 import io.plumery.inventoryitem.api.denormalizer.hazelcast.HazelcastManaged;

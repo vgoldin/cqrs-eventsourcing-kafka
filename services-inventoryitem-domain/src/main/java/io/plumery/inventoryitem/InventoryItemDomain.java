@@ -4,10 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.dropwizard.Application;
-import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.db.PooledDataSourceFactory;
-import io.dropwizard.migrations.MigrationsBundle;
-import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.plumery.core.ID;
 import io.plumery.core.infrastructure.EventPublisher;
@@ -51,7 +47,7 @@ public class InventoryItemDomain extends Application<InventoryItemDomainConfigur
     }
 
     private static void registerCommandHandlers(ActionHandlerResolver resolver, Repository<InventoryItem> repository) {
-        resolver.registerActionHandler(new CheckInItemsToIventoryHandler(repository));
+        resolver.registerActionHandler(new CheckInItemsToInventoryHandler(repository));
         resolver.registerActionHandler(new CreateInventoryItemHandler(repository));
         resolver.registerActionHandler(new DeactivateInventoryItemHandler(repository));
         resolver.registerActionHandler(new RemoveItemsFromInventoryHandler(repository));

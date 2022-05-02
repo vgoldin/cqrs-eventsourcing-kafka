@@ -5,10 +5,10 @@ import io.plumery.core.infrastructure.Repository;
 import io.plumery.inventoryitem.core.command.CheckInItemsToInventory;
 import io.plumery.inventoryitem.core.domain.InventoryItem;
 
-public class CheckInItemsToIventoryHandler implements CommandHandler<CheckInItemsToInventory> {
-    private Repository<InventoryItem> repository;
+public class CheckInItemsToInventoryHandler implements CommandHandler<CheckInItemsToInventory> {
+    private final Repository<InventoryItem> repository;
 
-    public CheckInItemsToIventoryHandler(Repository<InventoryItem> repository) {
+    public CheckInItemsToInventoryHandler(Repository<InventoryItem> repository) {
         this.repository = repository;
     }
 

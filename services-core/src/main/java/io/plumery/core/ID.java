@@ -20,11 +20,8 @@ public class ID implements Serializable {
             return new ID((String) id);
         } else if (id instanceof UUID) {
             return new ID(id.toString());
-        } else {
-            new IllegalArgumentException("The id should be of either String or UUID type");
         }
-
-        return null;
+        throw new IllegalArgumentException("The id should be of either String or UUID type");
     }
 
     public String toString() {

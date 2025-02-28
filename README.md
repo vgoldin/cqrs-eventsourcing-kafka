@@ -16,10 +16,17 @@ Module | Purpose
 `services-inventoryitem-api` | API micro-service, exposing RESTfull API, creating Projectin with Hazelcast and dispatching commands to Kafka
 `services-inventoryitem-domain` | Domain micro-service, encapsulating Aggregate Root, handling commands and publishing events
 
-# Pre-Requisities
-* JDK 1.8
-* Maven 3.3.x
+# Pre-Requisites
+* JDK
+* Maven
 * (optional) Docker (for Kafka)
+
+#  Modifying
+`services-inventoryitem-api` and `services-inventoryitem-domain` modules are referencing events and commands that are defined in the `services-intentoryitem-schema` module as JSON.
+
+Java source files are generated in each module that depend on these classes. This is done to avoid runtime dependency. Source files are generated as part of the `mvn install` cycle and are placed in the `target/java-gen` folder of each corresponding module.
+
+In order to resolve all the references, this folder needs to be added as an additional java source files directory in your favorite IDE.  
 
 #  Building
 `mvn clean install`
